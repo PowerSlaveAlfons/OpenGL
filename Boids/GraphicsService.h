@@ -48,11 +48,17 @@ private:
 	GraphicsService(const GraphicsService&) = delete;
 	GraphicsService& operator=(const GraphicsService&) = delete;
 
+	//GLuint vertexBuffer[3]{}, uvbuffer[3]{}, normalBuffer[3]{};
+
+	std::vector<GLuint> vertexBuffer, uvBuffer, normalBuffer;
+
 	//GLuint programID{};
 	//GLuint matrixID{};
 
 	GLFWwindow* window = nullptr;
 	static ControlService* cService;
+	const int WINDOW_WIDTH = 1920;
+	const int WINDOW_HEIGHT = 1080;
 
 	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 	static void error_callback(int error, const char* description)

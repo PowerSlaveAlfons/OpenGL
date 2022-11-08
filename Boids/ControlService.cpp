@@ -18,14 +18,15 @@ void ControlService::ComputeMatricesFromInput()
 	static double lastTime = glfwGetTime();
 	double currentTime = glfwGetTime();
 	float deltaTime = float(currentTime - lastTime);
+	int height, width;
+
 
 	double xpos, ypos;
 	glfwGetCursorPos(window, &xpos, &ypos);
+	glfwGetWindowSize(window,  &width, &height);
 
-	glfwSetCursorPos(window, 1024 / 2, 768 / 2); // TODO: Fix this meme
-
-	horizontalAngle += mouseSpeed * float(1024 / 2 - xpos);
-	verticalAngle += mouseSpeed * float(768 / 2 - ypos);
+	horizontalAngle += mouseSpeed * float((double)width / 2 - xpos);
+	verticalAngle += mouseSpeed * float((double)height / 2 - ypos);
 
 	//Direction Vector (Polar to Cartesian conversion)
 	glm::vec3 direction(

@@ -122,18 +122,18 @@ GLuint GraphicsService::loadDDS(const char* imagepath)
 
 	switch (four_cc)
 	{
-	case 0x31545844: // DXT1
-		format = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
-		break;
-	case 0x33545844: // DXT3
-		format = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
-		break;
-	case 0x35545844: // DXT5
-		format = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
-		break;
-	default:
-		free(buffer);
-		return 0;
+		case 0x31545844: // DXT1
+			format = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+			break;
+		case 0x33545844: // DXT3
+			format = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
+			break;
+		case 0x35545844: // DXT5
+			format = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
+			break;
+		default:
+			free(buffer);
+			return 0;
 	}
 
 	GLuint textureID;
@@ -166,7 +166,8 @@ GLuint GraphicsService::loadDDS(const char* imagepath)
 }
 
 // TODO Refactor this and determine the correct order of function calls
-void GraphicsService::initialize() {
+void GraphicsService::initialize()
+{
 	std::cout << "Initializing GLFW..." << std::endl;
 
 
@@ -176,7 +177,7 @@ void GraphicsService::initialize() {
 	glfwSetErrorCallback(error_callback);
 
 	if (!glfwInit()) // GLFW did not successfully initialize
-	{ 
+	{
 		exit(EXIT_FAILURE);
 	}
 
@@ -189,10 +190,10 @@ void GraphicsService::initialize() {
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 
-	window = glfwCreateWindow(1024, 768, "Cooler Titel", NULL, NULL);
+	window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Cooler Titel", NULL, NULL);
 
 	if (!window) // Window creation failed
-	{ 
+	{
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
@@ -205,11 +206,12 @@ void GraphicsService::initialize() {
 	// Should we use a loader library, this is where to initialize it
 	glewExperimental = GL_TRUE;
 
-	if (glewInit() != GLEW_OK) {
+	if (glewInit() != GLEW_OK)
+	{
 		std::cout << "Failed to initialize GLEW" << std::endl;
 		exit(EXIT_FAILURE);
 	}
-	glfwSetCursorPos(window, 1024 / 2, 768 / 2); // TODO: Fix this meme
+	glfwSetCursorPos(window, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2); // TODO: Fix this meme
 	glfwSwapInterval(0);
 
 	std::cout << "Successfully initialized GLFW" << std::endl;
@@ -229,7 +231,8 @@ glm::vec3 cubePositions[] = {
 	glm::vec3(-1.3f,  1.0f, -1.5f)
 };
 
-void GraphicsService::run() {
+void GraphicsService::run()
+{
 
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f); // Set Background color
 
@@ -269,32 +272,13 @@ void GraphicsService::run() {
 	res = ObjectLoader::loadOBJ("axtismus.obj", models[2].vertices, models[2].uvs, models[2].normals); */
 
 	bool res = GraphicsService::loadModel("Hammer.obj", models);
-	res = GraphicsService::loadModel("Bottle.obj", models);
-	res = GraphicsService::loadModel("axtismus.obj", models);
+	//res = GraphicsService::loadModel("Bottle.obj", models);
+	//res = GraphicsService::loadModel("axtismus.obj", models);
 
-	GLuint vertexBuffer[3]{}, uvbuffer[3]{}, normalBuffer[3]{};
+
 	int i = 0;
 
-	for (auto& model : models)
-	{
 
-		// Loading Vertices
-		glGenBuffers(1, &vertexBuffer[i]);
-		glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer[i]);
-		glBufferData(GL_ARRAY_BUFFER, model.vertices.size() * sizeof(glm::vec3), &model.vertices[0], GL_STATIC_DRAW);
-
-		// Loading UVs
-		glGenBuffers(1, &uvbuffer[i]);
-		glBindBuffer(GL_ARRAY_BUFFER, uvbuffer[i]);
-		glBufferData(GL_ARRAY_BUFFER, model.uvs.size() * sizeof(glm::vec2), &model.uvs[0], GL_STATIC_DRAW);
-
-		// Loading Normals
-		glGenBuffers(1, &normalBuffer[i]);
-		glBindBuffer(GL_ARRAY_BUFFER, normalBuffer[i]);
-		glBufferData(GL_ARRAY_BUFFER, model.normals.size() * sizeof(glm::vec3), &model.normals[0], GL_STATIC_DRAW);
-
-		i++;
-	}
 
 	// Enables Alpha Blending
 	//glEnable(GL_BLEND);
@@ -307,6 +291,7 @@ void GraphicsService::run() {
 	double lastTime = glfwGetTime();
 	double startTime = glfwGetTime();
 	int nbFrames = 0;
+	const double LogInterval = 1.0;
 
 	unsigned long counter = 0;
 	int modelToShow = 1;
@@ -314,25 +299,24 @@ void GraphicsService::run() {
 	float alpha = 0.0f;
 
 	std::vector<double> FrameTimes;
-	while (!glfwWindowShouldClose(window)) 
+	while (!glfwWindowShouldClose(window))
 	{
 		double currentTime = glfwGetTime();
 		nbFrames++;
 		FrameTimes.clear();
-		if (currentTime - lastTime >= 1.0) 
+		if (currentTime - lastTime >= 1.0)
 		{
 			FrameTimes.push_back(double(nbFrames));
 			nbFrames = 0;
 			lastTime += 1.0;
 		}
 
-		if (currentTime - startTime >= 5.0)
+		if (currentTime - startTime >= LogInterval)
 		{
-			printf("%f FPS\n", 1.0 * std::accumulate(FrameTimes.begin(), FrameTimes.end(), (double)0LL) / FrameTimes.size());
-			startTime += 5.0;
+			//printf("%f FPS\n", 1.0 * std::accumulate(FrameTimes.begin(), FrameTimes.end(), (double)0LL) / FrameTimes.size());
+			printf("Models loaded: %d\n", (int)models.size());
+			startTime = currentTime;
 		}
-		//modelToShow += 1;
-		//modelToShow %= 3;
 		counter++;
 
 
@@ -348,11 +332,16 @@ void GraphicsService::run() {
 		distance = cService->getDistanceFromOrigin();
 
 		if (distance > 15.0f)
-			modelToShow = 0;
+			modelToShow = 2;
 		else if (distance > 10.0f)
 			modelToShow = 1;
 		else
-			modelToShow = 2;
+			modelToShow = 0;
+
+		if ((modelToShow > models.size() - 1) && models.size() == 1)
+			res = GraphicsService::loadModel("Bottle.obj", models);
+		else if ((modelToShow > models.size() - 1) && models.size() == 2)
+			res = GraphicsService::loadModel("axtismus.obj", models);
 
 
 		glm::mat4 ProjectionMatrix = ControlService::getProjectionMatrix();
@@ -395,7 +384,7 @@ void GraphicsService::run() {
 
 		// Setup UV Buffer
 		glEnableVertexAttribArray(1);
-		glBindBuffer(GL_ARRAY_BUFFER, uvbuffer[modelToShow]);
+		glBindBuffer(GL_ARRAY_BUFFER, uvBuffer[modelToShow]);
 		glVertexAttribPointer(
 			1,
 			2,
@@ -426,7 +415,7 @@ void GraphicsService::run() {
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window); // this only happens once per screen frame
 		//glFinish();
-
+		glfwSetCursorPos(window, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
 		/* Poll for and process events */
 		glfwPollEvents();
 	}
@@ -434,7 +423,7 @@ void GraphicsService::run() {
 	for (i = 0; i < models.size(); i++)
 	{
 		glDeleteBuffers(1, &vertexBuffer[i]);
-		glDeleteBuffers(1, &uvbuffer[i]);
+		glDeleteBuffers(1, &uvBuffer[i]);
 		glDeleteBuffers(1, &normalBuffer[i]);
 	}
 	glDeleteProgram(programID);
@@ -445,16 +434,18 @@ void GraphicsService::run() {
 	glfwTerminate();
 }
 
-void GraphicsService::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+void GraphicsService::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
 
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) 
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 	{
 		glfwSetWindowShouldClose(window, GLFW_TRUE);
 	}
 
 }
 
-GLuint GraphicsService::loadShaders(const char* vertex_file_path, const char* fragment_file_path) {
+GLuint GraphicsService::loadShaders(const char* vertex_file_path, const char* fragment_file_path)
+{
 	// Create the shaders
 	GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 	GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
@@ -462,14 +453,14 @@ GLuint GraphicsService::loadShaders(const char* vertex_file_path, const char* fr
 	// Read the Vertex Shader code from the file
 	std::string VertexShaderCode;
 	std::ifstream VertexShaderStream(vertex_file_path, std::ios::in);
-	if (VertexShaderStream.is_open()) 
+	if (VertexShaderStream.is_open())
 	{
 		std::stringstream sstr;
 		sstr << VertexShaderStream.rdbuf();
 		VertexShaderCode = sstr.str();
 		VertexShaderStream.close();
 	}
-	else 
+	else
 	{
 		printf("Impossible to open %s. Are you in the right directory ? Don't forget to read the FAQ !\n", vertex_file_path);
 		if (getchar())
@@ -480,7 +471,7 @@ GLuint GraphicsService::loadShaders(const char* vertex_file_path, const char* fr
 	// Read the Fragment Shader code from the file
 	std::string FragmentShaderCode;
 	std::ifstream FragmentShaderStream(fragment_file_path, std::ios::in);
-	if (FragmentShaderStream.is_open()) 
+	if (FragmentShaderStream.is_open())
 	{
 		std::stringstream sstr;
 		sstr << FragmentShaderStream.rdbuf();
@@ -500,7 +491,7 @@ GLuint GraphicsService::loadShaders(const char* vertex_file_path, const char* fr
 	// Check Vertex Shader
 	glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
 	glGetShaderiv(VertexShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	if (InfoLogLength > 0) 
+	if (InfoLogLength > 0)
 	{
 		std::vector<char> VertexShaderErrorMessage(InfoLogLength + 1);
 		glGetShaderInfoLog(VertexShaderID, InfoLogLength, NULL, &VertexShaderErrorMessage[0]);
@@ -516,7 +507,7 @@ GLuint GraphicsService::loadShaders(const char* vertex_file_path, const char* fr
 	// Check Fragment Shader
 	glGetShaderiv(FragmentShaderID, GL_COMPILE_STATUS, &Result);
 	glGetShaderiv(FragmentShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	if (InfoLogLength > 0) 
+	if (InfoLogLength > 0)
 	{
 		std::vector<char> FragmentShaderErrorMessage(InfoLogLength + 1);
 		glGetShaderInfoLog(FragmentShaderID, InfoLogLength, NULL, &FragmentShaderErrorMessage[0]);
@@ -533,7 +524,7 @@ GLuint GraphicsService::loadShaders(const char* vertex_file_path, const char* fr
 	// Check the program
 	glGetProgramiv(ProgramID, GL_LINK_STATUS, &Result);
 	glGetProgramiv(ProgramID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	if (InfoLogLength > 0) 
+	if (InfoLogLength > 0)
 	{
 		std::vector<char> ProgramErrorMessage(InfoLogLength + 1);
 		glGetProgramInfoLog(ProgramID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
@@ -555,6 +546,27 @@ bool GraphicsService::loadModel(std::string FileName, std::vector<GraphicsServic
 
 	bool res = ObjectLoader::loadOBJ(FileName.c_str(), ModelToAdd.vertices, ModelToAdd.uvs, ModelToAdd.normals);
 	models.push_back(ModelToAdd);
+
+	vertexBuffer.push_back(int());
+	uvBuffer.push_back(int());
+	normalBuffer.push_back(int());
+
+
+	// Loading Vertices
+	glGenBuffers(1, &vertexBuffer[models.size() - 1]);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer[models.size() - 1]);
+	glBufferData(GL_ARRAY_BUFFER, ModelToAdd.vertices.size() * sizeof(glm::vec3), &ModelToAdd.vertices[0], GL_STATIC_DRAW);
+
+	// Loading UVs
+	glGenBuffers(1, &uvBuffer[models.size() - 1]);
+	glBindBuffer(GL_ARRAY_BUFFER, uvBuffer[models.size() - 1]);
+	glBufferData(GL_ARRAY_BUFFER, ModelToAdd.uvs.size() * sizeof(glm::vec2), &ModelToAdd.uvs[0], GL_STATIC_DRAW);
+
+	// Loading Normals
+	glGenBuffers(1, &normalBuffer[models.size() - 1]);
+	glBindBuffer(GL_ARRAY_BUFFER, normalBuffer[models.size() - 1]);
+	glBufferData(GL_ARRAY_BUFFER, ModelToAdd.normals.size() * sizeof(glm::vec3), &ModelToAdd.normals[0], GL_STATIC_DRAW);
+
 	return res;
 
 
