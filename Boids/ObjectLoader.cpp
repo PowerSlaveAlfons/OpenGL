@@ -11,8 +11,12 @@ bool ObjectLoader::loadOBJ(const char* path,
     std::vector< glm::vec2 > temp_uvs;
     std::vector< glm::vec3 > temp_normals;
 
+    std::string Path = path;
 
-    FILE* file = fopen(path, "r");
+    std::string FinalPath = "models/" + Path;
+
+
+    FILE* file = fopen(FinalPath.c_str(), "r");
 
     if (file == NULL) {
         printf("Impossible to open the file !\n");
