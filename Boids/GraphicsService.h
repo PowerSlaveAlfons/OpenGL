@@ -17,25 +17,6 @@
 
 
 class GraphicsService {
-private:
-	GraphicsService() = default;
-	~GraphicsService() = default;
-	GraphicsService(const GraphicsService&) = delete;
-	GraphicsService& operator=(const GraphicsService&) = delete;
-
-	//GLuint programID{};
-	//GLuint matrixID{};
-
-	GLFWwindow* window = nullptr;
-	static ControlService* cService;
-
-	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
-	static void error_callback(int error, const char* description) {
-		std::cerr << "Error: " << error << " " << description << std::endl;
-	}
-
-	GLuint loadShaders(const char* vertex_file_path, const char* fragment_file_path);
-
 
 public:
 	static GraphicsService& getInstance() {
@@ -61,5 +42,24 @@ public:
 		std::vector< glm::vec3 > normals;
 	} model;
 
+private:
+	GraphicsService() = default;
+	~GraphicsService() = default;
+	GraphicsService(const GraphicsService&) = delete;
+	GraphicsService& operator=(const GraphicsService&) = delete;
+
+	//GLuint programID{};
+	//GLuint matrixID{};
+
+	GLFWwindow* window = nullptr;
+	static ControlService* cService;
+
+	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+	static void error_callback(int error, const char* description)
+	{
+		std::cerr << "Error: " << error << " " << description << std::endl;
+	}
+	GLuint loadShaders(const char* vertex_file_path, const char* fragment_file_path);
+	bool loadModel(std::string FileName, std::vector<GraphicsService::model>& models);
 };
 

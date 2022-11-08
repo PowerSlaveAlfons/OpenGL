@@ -21,7 +21,7 @@ GLuint GraphicsService::loadBMP_custom(const char* imagepath)
 		std::cout << "Failed to load bmp, cancelling." << std::endl;
 		return false;
 	}
-	
+
 	if (fread(header, 1, 54, file) != 54)
 	{
 		std::cout << "Not an actual .bmp file, cancelling." << std::endl;
@@ -39,14 +39,14 @@ GLuint GraphicsService::loadBMP_custom(const char* imagepath)
 
 	// gets relevant information from the bmp file
 	//data_pos = *(int*) & (header[0x0A]); // not quite sure why we need this.
-	image_size = *(int*) & (header[0x22]);
-	width = *(int*) & (header[0x12]);
-	height = *(int*) & (header[0x16]);
-	
+	image_size = *(int*)&(header[0x22]);
+	width = *(int*)&(header[0x12]);
+	height = *(int*)&(header[0x16]);
+
 
 	std::cout << "Read bmp file " << imagepath << std::endl;
 	std::cout << width << " wide and " << height << " high" << std::endl;
-	
+
 	if (!image_size)
 		image_size = width * height * 3;
 	/*if (!data_pos)
@@ -56,7 +56,7 @@ GLuint GraphicsService::loadBMP_custom(const char* imagepath)
 	data = new uint8_t[image_size];
 	fread(data, 1, image_size, file); //read all the data
 	fclose(file);
-	
+
 	GLuint textureID;
 	glGenTextures(1, &textureID);
 
@@ -70,8 +70,8 @@ GLuint GraphicsService::loadBMP_custom(const char* imagepath)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
 	glGenerateMipmap(GL_TEXTURE_2D);
-	
-	
+
+
 	return textureID;
 }
 
@@ -88,7 +88,7 @@ GLuint GraphicsService::loadDDS(const char* imagepath)
 		return 0;
 	}
 
-	char filecode[4]{0};
+	char filecode[4]{ 0 };
 	fread(filecode, 1, 4, fp);
 	if (strncmp(filecode, "DDS", 3) != 0) // C-Style because the tutorial ... or I don't even know
 	{
@@ -101,10 +101,10 @@ GLuint GraphicsService::loadDDS(const char* imagepath)
 	fread(&header, 124, 1, fp);
 
 	uint32_t height = *(uint32_t*)&(header[8]);
-	uint32_t width = *(uint32_t*) & (header[12]);
-	uint32_t linear_size = *(uint32_t*) & (header[16]);
-	uint32_t mip_map_count = *(uint32_t*) & (header[24]);
-	uint32_t four_cc = *(uint32_t*) & (header[80]);
+	uint32_t width = *(uint32_t*)&(header[12]);
+	uint32_t linear_size = *(uint32_t*)&(header[16]);
+	uint32_t mip_map_count = *(uint32_t*)&(header[24]);
+	uint32_t four_cc = *(uint32_t*)&(header[80]);
 
 	uint8_t* buffer;
 	uint32_t buffer_size;
@@ -155,7 +155,7 @@ GLuint GraphicsService::loadDDS(const char* imagepath)
 		offset += size;
 		width /= 2;
 		height /= 2;
-		
+
 		// if texture isn't power of 2:
 		if (width < 1) width = 1;
 		if (height < 1) height = 1;
@@ -175,7 +175,8 @@ void GraphicsService::initialize() {
 
 	glfwSetErrorCallback(error_callback);
 
-	if (!glfwInit()) { // GLFW did not successfully initialize
+	if (!glfwInit()) // GLFW did not successfully initialize
+	{ 
 		exit(EXIT_FAILURE);
 	}
 
@@ -190,7 +191,8 @@ void GraphicsService::initialize() {
 
 	window = glfwCreateWindow(1024, 768, "Cooler Titel", NULL, NULL);
 
-	if (!window) { // Window creation failed
+	if (!window) // Window creation failed
+	{ 
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
@@ -228,7 +230,7 @@ glm::vec3 cubePositions[] = {
 };
 
 void GraphicsService::run() {
-	
+
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f); // Set Background color
 
 	// Enable depth test
@@ -246,12 +248,12 @@ void GraphicsService::run() {
 
 	// Create and compile our GLSL program from the shaders
 	GLuint programID = this->loadShaders("SimpleVertexShader.glsl", "SimpleFragmentShader.glsl");
-	
+
 	// Get a handle for our "MVP" uniform
 	GLuint matrixID = glGetUniformLocation(programID, "MVP");
 	GLuint viewMatrixID = glGetUniformLocation(programID, "V");
 	GLuint modelMatrixID = glGetUniformLocation(programID, "M");
-	
+
 	// Load the texture
 	GLuint texture = loadDDS("uvmap.DDS");
 
@@ -261,13 +263,14 @@ void GraphicsService::run() {
 	// Read our .obj file
 	std::vector<model> models;
 
-	models.push_back(model());
-	models.push_back(model());
-	models.push_back(model());
-
+	/*
 	bool res = ObjectLoader::loadOBJ("Hammer.obj", models[0].vertices, models[0].uvs, models[0].normals);
 	res = ObjectLoader::loadOBJ("Bottle.obj", models[1].vertices, models[1].uvs, models[1].normals);
-	res = ObjectLoader::loadOBJ("axtismus.obj", models[2].vertices, models[2].uvs, models[2].normals);
+	res = ObjectLoader::loadOBJ("axtismus.obj", models[2].vertices, models[2].uvs, models[2].normals); */
+
+	bool res = GraphicsService::loadModel("Hammer.obj", models);
+	res = GraphicsService::loadModel("Bottle.obj", models);
+	res = GraphicsService::loadModel("axtismus.obj", models);
 
 	GLuint vertexBuffer[3]{}, uvbuffer[3]{}, normalBuffer[3]{};
 	int i = 0;
@@ -306,16 +309,18 @@ void GraphicsService::run() {
 	int nbFrames = 0;
 
 	unsigned long counter = 0;
-	int rightIndex = 1;
+	int modelToShow = 1;
 	float distance = 0.0f;
 	float alpha = 0.0f;
 
 	std::vector<double> FrameTimes;
-	while (!glfwWindowShouldClose(window)) {
+	while (!glfwWindowShouldClose(window)) 
+	{
 		double currentTime = glfwGetTime();
 		nbFrames++;
 		FrameTimes.clear();
-		if (currentTime - lastTime >= 1.0) {
+		if (currentTime - lastTime >= 1.0) 
+		{
 			FrameTimes.push_back(double(nbFrames));
 			nbFrames = 0;
 			lastTime += 1.0;
@@ -326,8 +331,8 @@ void GraphicsService::run() {
 			printf("%f FPS\n", 1.0 * std::accumulate(FrameTimes.begin(), FrameTimes.end(), (double)0LL) / FrameTimes.size());
 			startTime += 5.0;
 		}
-		rightIndex += 1;
-		rightIndex %= 3;
+		//modelToShow += 1;
+		//modelToShow %= 3;
 		counter++;
 
 
@@ -343,11 +348,11 @@ void GraphicsService::run() {
 		distance = cService->getDistanceFromOrigin();
 
 		if (distance > 15.0f)
-			rightIndex = 0;
+			modelToShow = 0;
 		else if (distance > 10.0f)
-			rightIndex = 1;
+			modelToShow = 1;
 		else
-			rightIndex = 2;
+			modelToShow = 2;
 
 
 		glm::mat4 ProjectionMatrix = ControlService::getProjectionMatrix();
@@ -365,7 +370,7 @@ void GraphicsService::run() {
 		glm::vec3 lightPos = glm::vec3(10, 4, 4);
 		glUniform3f(LightID, lightPos.x, lightPos.y, lightPos.z);
 		glUniform1f(glGetUniformLocation(programID, "alpha"), alpha);
-		
+
 		// Alpha
 		alpha = ControlService::getAlpha() ? 1.0f : 0.3f;
 
@@ -375,44 +380,44 @@ void GraphicsService::run() {
 
 		// Set our texture sampler to use Texture Unit 0
 		glUniform1i(textureId, 0);
-		
-			
-			// Setup Vertex Buffer
-			glEnableVertexAttribArray(0);
-			glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer[rightIndex]);
-			glVertexAttribPointer(
-				0,
-				3,
-				GL_FLOAT,
-				GL_FALSE,
-				0,
-				(void*)0);
-
-			// Setup UV Buffer
-			glEnableVertexAttribArray(1);
-			glBindBuffer(GL_ARRAY_BUFFER, uvbuffer[rightIndex]);
-			glVertexAttribPointer(
-				1,
-				2,
-				GL_FLOAT,
-				GL_FALSE,
-				0,
-				(void*)0);
-
-			// Normal Buffer
-			glEnableVertexAttribArray(2);
-			glBindBuffer(GL_ARRAY_BUFFER, normalBuffer[rightIndex]);
-			glVertexAttribPointer(
-				2,
-				3,
-				GL_FLOAT,
-				GL_FALSE,
-				0,
-				(void*)0);
 
 
+		// Setup Vertex Buffer
+		glEnableVertexAttribArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer[modelToShow]);
+		glVertexAttribPointer(
+			0,
+			3,
+			GL_FLOAT,
+			GL_FALSE,
+			0,
+			(void*)0);
 
-		glDrawArrays(GL_TRIANGLES, 0, (GLsizei)models[rightIndex].vertices.size());
+		// Setup UV Buffer
+		glEnableVertexAttribArray(1);
+		glBindBuffer(GL_ARRAY_BUFFER, uvbuffer[modelToShow]);
+		glVertexAttribPointer(
+			1,
+			2,
+			GL_FLOAT,
+			GL_FALSE,
+			0,
+			(void*)0);
+
+		// Normal Buffer
+		glEnableVertexAttribArray(2);
+		glBindBuffer(GL_ARRAY_BUFFER, normalBuffer[modelToShow]);
+		glVertexAttribPointer(
+			2,
+			3,
+			GL_FLOAT,
+			GL_FALSE,
+			0,
+			(void*)0);
+
+
+
+		glDrawArrays(GL_TRIANGLES, 0, (GLsizei)models[modelToShow].vertices.size());
 
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
@@ -441,18 +446,12 @@ void GraphicsService::run() {
 }
 
 void GraphicsService::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-	//GraphicsService& instance = GraphicsService::getInstance();
-	if (mods) return;
 
-	if (action == GLFW_RELEASE) return;
-
-	scancode = scancode; // Suppresses the warning about the unused formal parameter
-
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) 
+	{
 		glfwSetWindowShouldClose(window, GLFW_TRUE);
 	}
-	
-	// TODO Read in arrow keys for movement in scene
+
 }
 
 GLuint GraphicsService::loadShaders(const char* vertex_file_path, const char* fragment_file_path) {
@@ -463,12 +462,15 @@ GLuint GraphicsService::loadShaders(const char* vertex_file_path, const char* fr
 	// Read the Vertex Shader code from the file
 	std::string VertexShaderCode;
 	std::ifstream VertexShaderStream(vertex_file_path, std::ios::in);
-	if (VertexShaderStream.is_open()) {
+	if (VertexShaderStream.is_open()) 
+	{
 		std::stringstream sstr;
 		sstr << VertexShaderStream.rdbuf();
 		VertexShaderCode = sstr.str();
 		VertexShaderStream.close();
-	} else {
+	}
+	else 
+	{
 		printf("Impossible to open %s. Are you in the right directory ? Don't forget to read the FAQ !\n", vertex_file_path);
 		if (getchar())
 			return 0;
@@ -478,7 +480,8 @@ GLuint GraphicsService::loadShaders(const char* vertex_file_path, const char* fr
 	// Read the Fragment Shader code from the file
 	std::string FragmentShaderCode;
 	std::ifstream FragmentShaderStream(fragment_file_path, std::ios::in);
-	if (FragmentShaderStream.is_open()) {
+	if (FragmentShaderStream.is_open()) 
+	{
 		std::stringstream sstr;
 		sstr << FragmentShaderStream.rdbuf();
 		FragmentShaderCode = sstr.str();
@@ -497,7 +500,8 @@ GLuint GraphicsService::loadShaders(const char* vertex_file_path, const char* fr
 	// Check Vertex Shader
 	glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
 	glGetShaderiv(VertexShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	if (InfoLogLength > 0) {
+	if (InfoLogLength > 0) 
+	{
 		std::vector<char> VertexShaderErrorMessage(InfoLogLength + 1);
 		glGetShaderInfoLog(VertexShaderID, InfoLogLength, NULL, &VertexShaderErrorMessage[0]);
 		printf("%s\n", &VertexShaderErrorMessage[0]);
@@ -512,7 +516,8 @@ GLuint GraphicsService::loadShaders(const char* vertex_file_path, const char* fr
 	// Check Fragment Shader
 	glGetShaderiv(FragmentShaderID, GL_COMPILE_STATUS, &Result);
 	glGetShaderiv(FragmentShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	if (InfoLogLength > 0) {
+	if (InfoLogLength > 0) 
+	{
 		std::vector<char> FragmentShaderErrorMessage(InfoLogLength + 1);
 		glGetShaderInfoLog(FragmentShaderID, InfoLogLength, NULL, &FragmentShaderErrorMessage[0]);
 		printf("%s\n", &FragmentShaderErrorMessage[0]);
@@ -528,7 +533,8 @@ GLuint GraphicsService::loadShaders(const char* vertex_file_path, const char* fr
 	// Check the program
 	glGetProgramiv(ProgramID, GL_LINK_STATUS, &Result);
 	glGetProgramiv(ProgramID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	if (InfoLogLength > 0) {
+	if (InfoLogLength > 0) 
+	{
 		std::vector<char> ProgramErrorMessage(InfoLogLength + 1);
 		glGetProgramInfoLog(ProgramID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
 		printf("%s\n", &ProgramErrorMessage[0]);
@@ -541,4 +547,15 @@ GLuint GraphicsService::loadShaders(const char* vertex_file_path, const char* fr
 	glDeleteShader(FragmentShaderID);
 
 	return ProgramID;
+}
+
+bool GraphicsService::loadModel(std::string FileName, std::vector<GraphicsService::model>& models)
+{
+	GraphicsService::model ModelToAdd;
+
+	bool res = ObjectLoader::loadOBJ(FileName.c_str(), ModelToAdd.vertices, ModelToAdd.uvs, ModelToAdd.normals);
+	models.push_back(ModelToAdd);
+	return res;
+
+
 }
