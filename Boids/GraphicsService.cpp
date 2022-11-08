@@ -266,19 +266,8 @@ void GraphicsService::run()
 	// Read our .obj file
 	std::vector<model> models;
 
-	/*
-	bool res = ObjectLoader::loadOBJ("Hammer.obj", models[0].vertices, models[0].uvs, models[0].normals);
-	res = ObjectLoader::loadOBJ("Bottle.obj", models[1].vertices, models[1].uvs, models[1].normals);
-	res = ObjectLoader::loadOBJ("axtismus.obj", models[2].vertices, models[2].uvs, models[2].normals); */
 
 	bool res = GraphicsService::loadModel("Hammer.obj", models);
-	//res = GraphicsService::loadModel("Bottle.obj", models);
-	//res = GraphicsService::loadModel("axtismus.obj", models);
-
-
-	int i = 0;
-
-
 
 	// Enables Alpha Blending
 	//glEnable(GL_BLEND);
@@ -291,7 +280,7 @@ void GraphicsService::run()
 	double lastTime = glfwGetTime();
 	double startTime = glfwGetTime();
 	int nbFrames = 0;
-	const double LogInterval = 1.0;
+	const double LogInterval = 5.0;
 
 	unsigned long counter = 0;
 	int modelToShow = 1;
@@ -303,7 +292,7 @@ void GraphicsService::run()
 	{
 		double currentTime = glfwGetTime();
 		nbFrames++;
-		FrameTimes.clear();
+		
 		if (currentTime - lastTime >= 1.0)
 		{
 			FrameTimes.push_back(double(nbFrames));
@@ -313,8 +302,10 @@ void GraphicsService::run()
 
 		if (currentTime - startTime >= LogInterval)
 		{
-			//printf("%f FPS\n", 1.0 * std::accumulate(FrameTimes.begin(), FrameTimes.end(), (double)0LL) / FrameTimes.size());
+			printf("%f FPS\n", 1.0 * std::accumulate(FrameTimes.begin(), FrameTimes.end(), (double)0LL) / FrameTimes.size());
+			printf("FrameTimes in Vector: %d\n", (int)FrameTimes.size());
 			printf("Models loaded: %d\n", (int)models.size());
+			FrameTimes.clear();
 			startTime = currentTime;
 		}
 		counter++;
@@ -420,7 +411,7 @@ void GraphicsService::run()
 		glfwPollEvents();
 	}
 
-	for (i = 0; i < models.size(); i++)
+	for (int i = 0; i < models.size(); i++)
 	{
 		glDeleteBuffers(1, &vertexBuffer[i]);
 		glDeleteBuffers(1, &uvBuffer[i]);
