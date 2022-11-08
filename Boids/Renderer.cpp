@@ -263,12 +263,6 @@ void Renderer::run()
 	// Get a handle for our "Texture" uniform
 	GLuint textureId = glGetUniformLocation(programID, "myTextureSampler");
 
-	// Read our .obj file
-	//std::vector<model> models;
-
-
-	//bool res = Renderer::loadModel("Hammer.obj");
-
 	// Enables Alpha Blending
 	//glEnable(GL_BLEND);
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
