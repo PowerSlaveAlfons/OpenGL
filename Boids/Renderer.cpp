@@ -1,13 +1,13 @@
-#include "GraphicsService.h"
+#include "Renderer.h"
 #include <filesystem>
 #include <numeric>
 #pragma warning(disable:4996) // _CRT_SECURE_NO_WARNINGS
 
 
 
-ControlService* GraphicsService::cService = nullptr;
+ControlService* Renderer::cService = nullptr;
 
-GLuint GraphicsService::loadBMP_custom(const char* imagepath)
+GLuint Renderer::loadBMP_custom(const char* imagepath)
 {
 	uint8_t header[54]; // 54 Byte Header each BMP file has
 	// uint32_t data_pos; // Pointer to the start of data
@@ -75,7 +75,7 @@ GLuint GraphicsService::loadBMP_custom(const char* imagepath)
 	return textureID;
 }
 
-GLuint GraphicsService::loadDDS(const char* imagepath)
+GLuint Renderer::loadDDS(const char* imagepath)
 {
 	uint8_t header[124]; // defined by the standard
 
@@ -166,13 +166,13 @@ GLuint GraphicsService::loadDDS(const char* imagepath)
 }
 
 // TODO Refactor this and determine the correct order of function calls
-void GraphicsService::initialize()
+void Renderer::initialize()
 {
 	std::cout << "Initializing GLFW..." << std::endl;
 
 
-	GraphicsService::setControlService(ControlService::getInstance());
-	GraphicsService::cService->initialize();
+	Renderer::setControlService(ControlService::getInstance());
+	Renderer::cService->initialize();
 
 	glfwSetErrorCallback(error_callback);
 
@@ -231,7 +231,7 @@ glm::vec3 cubePositions[] = {
 	glm::vec3(-1.3f,  1.0f, -1.5f)
 };
 
-void GraphicsService::run()
+void Renderer::run()
 {
 
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f); // Set Background color
@@ -267,7 +267,7 @@ void GraphicsService::run()
 	std::vector<model> models;
 
 
-	bool res = GraphicsService::loadModel("Hammer.obj", models);
+	bool res = Renderer::loadModel("Hammer.obj", models);
 
 	// Enables Alpha Blending
 	//glEnable(GL_BLEND);
@@ -330,15 +330,15 @@ void GraphicsService::run()
 			modelToShow = 0;
 
 		if ((modelToShow > models.size() - 1) && models.size() == 1)
-			res = GraphicsService::loadModel("Bottle.obj", models);
+			res = Renderer::loadModel("Bottle.obj", models);
 		else if ((modelToShow > models.size() - 1) && models.size() == 2)
-			res = GraphicsService::loadModel("axtismus.obj", models);
+			res = Renderer::loadModel("axtismus.obj", models);
 
 
 		glm::mat4 ProjectionMatrix = ControlService::getProjectionMatrix();
 		glm::mat4 ViewMatrix = ControlService::getViewMatrix();
 		glm::mat4 ModelMatrix = glm::mat4(1.0);
-		//ModelMatrix = glm::translate(ModelMatrix, glm::vec3(counter / 100.0, 0, 0));
+		ModelMatrix = glm::translate(ModelMatrix, glm::vec3(counter / 10000.0, 0, 0));
 		glm::mat4 mvp = ProjectionMatrix * ViewMatrix * ModelMatrix;
 
 		// Send our transformation to the currently bound shader in the "MVP" uniform
@@ -347,6 +347,7 @@ void GraphicsService::run()
 		glUniformMatrix4fv(viewMatrixID, 1, GL_FALSE, &ViewMatrix[0][0]);
 
 		// Lighting
+		
 		glm::vec3 lightPos = glm::vec3(10, 4, 4);
 		glUniform3f(LightID, lightPos.x, lightPos.y, lightPos.z);
 		glUniform1f(glGetUniformLocation(programID, "alpha"), alpha);
@@ -425,7 +426,7 @@ void GraphicsService::run()
 	glfwTerminate();
 }
 
-void GraphicsService::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+void Renderer::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
@@ -435,7 +436,7 @@ void GraphicsService::key_callback(GLFWwindow* window, int key, int scancode, in
 
 }
 
-GLuint GraphicsService::loadShaders(const char* vertex_file_path, const char* fragment_file_path)
+GLuint Renderer::loadShaders(const char* vertex_file_path, const char* fragment_file_path)
 {
 	// Create the shaders
 	GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
@@ -531,9 +532,9 @@ GLuint GraphicsService::loadShaders(const char* vertex_file_path, const char* fr
 	return ProgramID;
 }
 
-bool GraphicsService::loadModel(std::string FileName, std::vector<GraphicsService::model>& models)
+bool Renderer::loadModel(std::string FileName, std::vector<Renderer::model>& models)
 {
-	GraphicsService::model ModelToAdd;
+	Renderer::model ModelToAdd;
 
 	bool res = ObjectLoader::loadOBJ(FileName.c_str(), ModelToAdd.vertices, ModelToAdd.uvs, ModelToAdd.normals);
 	models.push_back(ModelToAdd);

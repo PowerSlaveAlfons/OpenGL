@@ -16,11 +16,11 @@
 #include "ObjectLoader.h"
 
 
-class GraphicsService {
+class Renderer {
 
 public:
-	static GraphicsService& getInstance() {
-		static GraphicsService instance;
+	static Renderer& getInstance() {
+		static Renderer instance;
 		return instance;
 	}
 	static GLuint loadBMP_custom(const char* imagepath);
@@ -43,10 +43,10 @@ public:
 	} model;
 
 private:
-	GraphicsService() = default;
-	~GraphicsService() = default;
-	GraphicsService(const GraphicsService&) = delete;
-	GraphicsService& operator=(const GraphicsService&) = delete;
+	Renderer() = default;
+	~Renderer() = default;
+	Renderer(const Renderer&) = delete;
+	Renderer& operator=(const Renderer&) = delete;
 
 	//GLuint vertexBuffer[3]{}, uvbuffer[3]{}, normalBuffer[3]{};
 
@@ -66,6 +66,6 @@ private:
 		std::cerr << "Error: " << error << " " << description << std::endl;
 	}
 	GLuint loadShaders(const char* vertex_file_path, const char* fragment_file_path);
-	bool loadModel(std::string FileName, std::vector<GraphicsService::model>& models);
+	bool loadModel(std::string FileName, std::vector<Renderer::model>& models);
 };
 
