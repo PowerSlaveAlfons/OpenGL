@@ -19,12 +19,22 @@
 class Renderer {
 
 public:
+	typedef struct model
+	{
+		std::vector< glm::vec3 > vertices;
+		std::vector< glm::vec2 > uvs;
+		std::vector< glm::vec3 > normals;
+	} model;
+
+	std::vector<model> models;
+
 	static Renderer& getInstance() {
 		static Renderer instance;
 		return instance;
 	}
 	static GLuint loadBMP_custom(const char* imagepath);
 	static GLuint loadDDS(const char* imagepath);
+
 
 	static void setControlService(ControlService& service)
 	{
@@ -33,14 +43,12 @@ public:
 
 	void initialize();
 	void run();
+	bool draw(model model);
+	bool loadModel(std::string FileName);
+
 
 	void rotateMesh();
 
-	typedef struct model {
-		std::vector< glm::vec3 > vertices;
-		std::vector< glm::vec2 > uvs;
-		std::vector< glm::vec3 > normals;
-	} model;
 
 private:
 	Renderer() = default;
@@ -66,6 +74,5 @@ private:
 		std::cerr << "Error: " << error << " " << description << std::endl;
 	}
 	GLuint loadShaders(const char* vertex_file_path, const char* fragment_file_path);
-	bool loadModel(std::string FileName, std::vector<Renderer::model>& models);
 };
 

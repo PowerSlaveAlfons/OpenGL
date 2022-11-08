@@ -7,7 +7,10 @@ int main() {
 
     Renderer& gService = Renderer::getInstance();
 
+
+
     gService.initialize();
+    gService.loadModel("Hammer.obj");
     gService.run();
 
 

@@ -264,10 +264,10 @@ void Renderer::run()
 	GLuint textureId = glGetUniformLocation(programID, "myTextureSampler");
 
 	// Read our .obj file
-	std::vector<model> models;
+	//std::vector<model> models;
 
 
-	bool res = Renderer::loadModel("Hammer.obj", models);
+	//bool res = Renderer::loadModel("Hammer.obj");
 
 	// Enables Alpha Blending
 	//glEnable(GL_BLEND);
@@ -330,9 +330,9 @@ void Renderer::run()
 			modelToShow = 0;
 
 		if ((modelToShow > models.size() - 1) && models.size() == 1)
-			res = Renderer::loadModel("Bottle.obj", models);
+			Renderer::loadModel("Bottle.obj");
 		else if ((modelToShow > models.size() - 1) && models.size() == 2)
-			res = Renderer::loadModel("axtismus.obj", models);
+			Renderer::loadModel("axtismus.obj");
 
 
 		glm::mat4 ProjectionMatrix = ControlService::getProjectionMatrix();
@@ -532,7 +532,7 @@ GLuint Renderer::loadShaders(const char* vertex_file_path, const char* fragment_
 	return ProgramID;
 }
 
-bool Renderer::loadModel(std::string FileName, std::vector<Renderer::model>& models)
+bool Renderer::loadModel(std::string FileName)
 {
 	Renderer::model ModelToAdd;
 
