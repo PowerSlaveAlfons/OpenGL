@@ -5,6 +5,7 @@
 #include <sstream>
 #include <vector>
 #include <random>
+#include <map>
 #include <GL/glew.h>
 #define GLFW_DLL
 #include <GLFW/glfw3.h>
@@ -14,17 +15,14 @@
 
 #include "ControlService.h"
 #include "ObjectLoader.h"
+#include "Model.h"
+
+
 
 
 class Renderer {
 
 public:
-	typedef struct model
-	{
-		std::vector< glm::vec3 > vertices;
-		std::vector< glm::vec2 > uvs;
-		std::vector< glm::vec3 > normals;
-	} model;
 
 	std::vector<model> models;
 
@@ -43,7 +41,7 @@ public:
 
 	void initialize();
 	void run();
-	bool draw(model model);
+	bool draw(model model, GLuint texture, GLuint textureId);
 	bool loadModel(std::string FileName);
 
 
@@ -56,12 +54,7 @@ private:
 	Renderer(const Renderer&) = delete;
 	Renderer& operator=(const Renderer&) = delete;
 
-	//GLuint vertexBuffer[3]{}, uvbuffer[3]{}, normalBuffer[3]{};
-
-	std::vector<GLuint> vertexBuffer, uvBuffer, normalBuffer;
-
-	//GLuint programID{};
-	//GLuint matrixID{};
+	std::map<std::string, GLuint> vertexBuffer, uvBuffer, normalBuffer;
 
 	GLFWwindow* window = nullptr;
 	static ControlService* cService;

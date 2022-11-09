@@ -332,7 +332,7 @@ void Renderer::run()
 		glm::mat4 ProjectionMatrix = ControlService::getProjectionMatrix();
 		glm::mat4 ViewMatrix = ControlService::getViewMatrix();
 		glm::mat4 ModelMatrix = glm::mat4(1.0);
-		ModelMatrix = glm::translate(ModelMatrix, glm::vec3(counter / 10000.0, 0, 0));
+		//ModelMatrix = glm::translate(ModelMatrix, glm::vec3(counter / 10000.0, 0, 0));
 		glm::mat4 mvp = ProjectionMatrix * ViewMatrix * ModelMatrix;
 
 		// Send our transformation to the currently bound shader in the "MVP" uniform
@@ -349,50 +349,7 @@ void Renderer::run()
 		// Alpha
 		alpha = ControlService::getAlpha() ? 1.0f : 0.3f;
 
-		// Bind our texture in Texture Unit 0
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture);
-
-		// Set our texture sampler to use Texture Unit 0
-		glUniform1i(textureId, 0);
-
-
-		// Setup Vertex Buffer
-		glEnableVertexAttribArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer[modelToShow]);
-		glVertexAttribPointer(
-			0,
-			3,
-			GL_FLOAT,
-			GL_FALSE,
-			0,
-			(void*)0);
-
-		// Setup UV Buffer
-		glEnableVertexAttribArray(1);
-		glBindBuffer(GL_ARRAY_BUFFER, uvBuffer[modelToShow]);
-		glVertexAttribPointer(
-			1,
-			2,
-			GL_FLOAT,
-			GL_FALSE,
-			0,
-			(void*)0);
-
-		// Normal Buffer
-		glEnableVertexAttribArray(2);
-		glBindBuffer(GL_ARRAY_BUFFER, normalBuffer[modelToShow]);
-		glVertexAttribPointer(
-			2,
-			3,
-			GL_FLOAT,
-			GL_FALSE,
-			0,
-			(void*)0);
-
-
-
-		glDrawArrays(GL_TRIANGLES, 0, (GLsizei)models[modelToShow].vertices.size());
+		draw(models[modelToShow], texture, textureId);
 
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
@@ -405,13 +362,14 @@ void Renderer::run()
 		/* Poll for and process events */
 		glfwPollEvents();
 	}
-
+	// TODO: FIX CLEANUP
+	/*
 	for (int i = 0; i < models.size(); i++)
 	{
 		glDeleteBuffers(1, &vertexBuffer[i]);
 		glDeleteBuffers(1, &uvBuffer[i]);
 		glDeleteBuffers(1, &normalBuffer[i]);
-	}
+	} */
 	glDeleteProgram(programID);
 	glDeleteTextures(1, &texture);
 	glDeleteVertexArrays(1, &vertexArrayID);
@@ -528,32 +486,81 @@ GLuint Renderer::loadShaders(const char* vertex_file_path, const char* fragment_
 
 bool Renderer::loadModel(std::string FileName)
 {
-	Renderer::model ModelToAdd;
+	model ModelToAdd;
 
-	bool res = ObjectLoader::loadOBJ(FileName.c_str(), ModelToAdd.vertices, ModelToAdd.uvs, ModelToAdd.normals);
+	bool res = ObjectLoader::loadOBJ(FileName.c_str(), ModelToAdd);
 	models.push_back(ModelToAdd);
 
-	vertexBuffer.push_back(int());
-	uvBuffer.push_back(int());
-	normalBuffer.push_back(int());
+	vertexBuffer.insert(std::pair<std::string, GLuint>(FileName, 0));
+	uvBuffer.insert(std::pair<std::string, GLuint>(FileName, 0));
+	normalBuffer.insert(std::pair<std::string, GLuint>(FileName, 0));
 
 
 	// Loading Vertices
-	glGenBuffers(1, &vertexBuffer[models.size() - 1]);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer[models.size() - 1]);
+	glGenBuffers(1, &vertexBuffer[FileName]);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer[FileName]);
 	glBufferData(GL_ARRAY_BUFFER, ModelToAdd.vertices.size() * sizeof(glm::vec3), &ModelToAdd.vertices[0], GL_STATIC_DRAW);
 
 	// Loading UVs
-	glGenBuffers(1, &uvBuffer[models.size() - 1]);
-	glBindBuffer(GL_ARRAY_BUFFER, uvBuffer[models.size() - 1]);
+	glGenBuffers(1, &uvBuffer[FileName]);
+	glBindBuffer(GL_ARRAY_BUFFER, uvBuffer[FileName]);
 	glBufferData(GL_ARRAY_BUFFER, ModelToAdd.uvs.size() * sizeof(glm::vec2), &ModelToAdd.uvs[0], GL_STATIC_DRAW);
 
 	// Loading Normals
-	glGenBuffers(1, &normalBuffer[models.size() - 1]);
-	glBindBuffer(GL_ARRAY_BUFFER, normalBuffer[models.size() - 1]);
+	glGenBuffers(1, &normalBuffer[FileName]);
+	glBindBuffer(GL_ARRAY_BUFFER, normalBuffer[FileName]);
 	glBufferData(GL_ARRAY_BUFFER, ModelToAdd.normals.size() * sizeof(glm::vec3), &ModelToAdd.normals[0], GL_STATIC_DRAW);
 
 	return res;
 
 
+}
+
+bool Renderer::draw(model model, GLuint texture, GLuint textureId)
+{
+	// Bind our texture in Texture Unit 0
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	// Set our texture sampler to use Texture Unit 0
+	glUniform1i(textureId, 0);
+
+
+	// Setup Vertex Buffer
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer[model.id]);
+	glVertexAttribPointer(
+		0,
+		3,
+		GL_FLOAT,
+		GL_FALSE,
+		0,
+		(void*)0);
+
+	// Setup UV Buffer
+	glEnableVertexAttribArray(1);
+	glBindBuffer(GL_ARRAY_BUFFER, uvBuffer[model.id]);
+	glVertexAttribPointer(
+		1,
+		2,
+		GL_FLOAT,
+		GL_FALSE,
+		0,
+		(void*)0);
+
+	// Normal Buffer
+	glEnableVertexAttribArray(2);
+	glBindBuffer(GL_ARRAY_BUFFER, normalBuffer[model.id]);
+	glVertexAttribPointer(
+		2,
+		3,
+		GL_FLOAT,
+		GL_FALSE,
+		0,
+		(void*)0);
+
+
+
+	glDrawArrays(GL_TRIANGLES, 0, (GLsizei)model.vertices.size());
+	return true;
 }

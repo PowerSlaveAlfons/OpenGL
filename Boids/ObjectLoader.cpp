@@ -2,9 +2,7 @@
 #pragma warning(disable:4996) // _CRT_SECURE_NO_WARNINGS
 
 bool ObjectLoader::loadOBJ(const char* path,
-    std::vector < glm::vec3 >& out_vertices,
-    std::vector < glm::vec2 >& out_uvs,
-    std::vector < glm::vec3 >& out_normals) {
+    model& out_model) {
 
     std::vector< uint32_t > vertexIndices, uvIndices, normalIndices;
     std::vector< glm::vec3 > temp_vertices;
@@ -73,10 +71,11 @@ bool ObjectLoader::loadOBJ(const char* path,
         glm::vec2 uv = temp_uvs[uvIndex];
         glm::vec3 normal = temp_normals[normalIndex];
 
-        out_vertices.push_back(vertex);
-        out_uvs.push_back(uv);
-        out_normals.push_back(normal);
+        out_model.vertices.push_back(vertex);
+        out_model.uvs.push_back(uv);
+        out_model.normals.push_back(normal);
     }
+    out_model.id = std::string(path);
     fclose(file);
     return true;
 }
