@@ -41,7 +41,7 @@ public:
 
 	void initialize();
 	void run();
-	bool draw(model model, GLuint texture, GLuint textureId);
+	bool draw(model model, GLuint texture, GLuint textureId, glm::mat4 position);
 	bool loadModel(std::string FileName);
 
 
@@ -55,6 +55,8 @@ private:
 	Renderer& operator=(const Renderer&) = delete;
 
 	std::map<std::string, GLuint> vertexBuffer, uvBuffer, normalBuffer;
+	GLuint matrixID, viewMatrixID, modelMatrixID, LightID, programID;
+	glm::mat4 ProjectionMatrix, ViewMatrix, ModelMatrix, mvp;
 
 	GLFWwindow* window = nullptr;
 	static ControlService* cService;

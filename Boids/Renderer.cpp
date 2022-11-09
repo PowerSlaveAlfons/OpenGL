@@ -250,12 +250,12 @@ void Renderer::run()
 	glBindVertexArray(vertexArrayID);
 
 	// Create and compile our GLSL program from the shaders
-	GLuint programID = this->loadShaders("SimpleVertexShader.glsl", "SimpleFragmentShader.glsl");
+	programID = this->loadShaders("SimpleVertexShader.glsl", "SimpleFragmentShader.glsl");
 
 	// Get a handle for our "MVP" uniform
-	GLuint matrixID = glGetUniformLocation(programID, "MVP");
-	GLuint viewMatrixID = glGetUniformLocation(programID, "V");
-	GLuint modelMatrixID = glGetUniformLocation(programID, "M");
+	matrixID = glGetUniformLocation(programID, "MVP");
+	viewMatrixID = glGetUniformLocation(programID, "V");
+	modelMatrixID = glGetUniformLocation(programID, "M");
 
 	// Load the texture
 	GLuint texture = loadDDS("uvmap.DDS");
@@ -269,7 +269,7 @@ void Renderer::run()
 
 	// Get a handle for our "LightPosition" uniform
 	glUseProgram(programID);
-	GLuint LightID = glGetUniformLocation(programID, "LightPostion_worldspace");
+	LightID = glGetUniformLocation(programID, "LightPostion_worldspace");
 
 	double lastTime = glfwGetTime();
 	double startTime = glfwGetTime();
@@ -279,7 +279,6 @@ void Renderer::run()
 	unsigned long counter = 0;
 	int modelToShow = 1;
 	float distance = 0.0f;
-	float alpha = 0.0f;
 
 	std::vector<double> FrameTimes;
 	while (!glfwWindowShouldClose(window))
@@ -329,27 +328,10 @@ void Renderer::run()
 			Renderer::loadModel("axtismus.obj");
 
 
-		glm::mat4 ProjectionMatrix = ControlService::getProjectionMatrix();
-		glm::mat4 ViewMatrix = ControlService::getViewMatrix();
-		glm::mat4 ModelMatrix = glm::mat4(1.0);
-		//ModelMatrix = glm::translate(ModelMatrix, glm::vec3(counter / 10000.0, 0, 0));
-		glm::mat4 mvp = ProjectionMatrix * ViewMatrix * ModelMatrix;
+		for (model m : models)
+			draw(m, texture, textureId, glm::mat4(1.0f));
 
-		// Send our transformation to the currently bound shader in the "MVP" uniform
-		glUniformMatrix4fv(matrixID, 1, GL_FALSE, &mvp[0][0]);
-		glUniformMatrix4fv(modelMatrixID, 1, GL_FALSE, &ModelMatrix[0][0]);
-		glUniformMatrix4fv(viewMatrixID, 1, GL_FALSE, &ViewMatrix[0][0]);
-
-		// Lighting
-		
-		glm::vec3 lightPos = glm::vec3(10, 4, 4);
-		glUniform3f(LightID, lightPos.x, lightPos.y, lightPos.z);
-		glUniform1f(glGetUniformLocation(programID, "alpha"), alpha);
-
-		// Alpha
-		alpha = ControlService::getAlpha() ? 1.0f : 0.3f;
-
-		draw(models[modelToShow], texture, textureId);
+		//draw(models[modelToShow], texture, textureId);
 
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
@@ -516,8 +498,28 @@ bool Renderer::loadModel(std::string FileName)
 
 }
 
-bool Renderer::draw(model model, GLuint texture, GLuint textureId)
+bool Renderer::draw(model model, GLuint texture, GLuint textureId, glm::mat4 position)
 {
+	// Alpha
+	GLuint alpha = ControlService::getAlpha() ? 1.0f : 0.3f;
+
+	ProjectionMatrix = ControlService::getProjectionMatrix();
+    ViewMatrix = ControlService::getViewMatrix();
+    ModelMatrix = position;
+	//ModelMatrix = glm::translate(ModelMatrix, glm::vec3(counter / 10000.0, 0, 0));
+	glm::mat4 mvp = ProjectionMatrix * ViewMatrix * ModelMatrix;
+
+	// Send our transformation to the currently bound shader in the "MVP" uniform
+	glUniformMatrix4fv(matrixID, 1, GL_FALSE, &mvp[0][0]);
+	glUniformMatrix4fv(modelMatrixID, 1, GL_FALSE, &ModelMatrix[0][0]);
+	glUniformMatrix4fv(viewMatrixID, 1, GL_FALSE, &ViewMatrix[0][0]);
+
+	// Lighting
+
+	glm::vec3 lightPos = glm::vec3(10, 4, 4);
+	glUniform3f(LightID, lightPos.x, lightPos.y, lightPos.z);
+	glUniform1f(glGetUniformLocation(programID, "alpha"), alpha);
+	
 	// Bind our texture in Texture Unit 0
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture);
