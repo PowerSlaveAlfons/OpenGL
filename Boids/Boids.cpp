@@ -8,9 +8,10 @@ int main() {
     Renderer& gService = Renderer::getInstance();
 
 
+    Model ModelAux;
+
 
     gService.initialize();
-    gService.loadModel("Hammer.obj");
     gService.run();
 
 

@@ -2,7 +2,7 @@
 #pragma warning(disable:4996) // _CRT_SECURE_NO_WARNINGS
 
 bool ObjectLoader::loadOBJ(const char* path,
-    model& out_model) {
+    Model& out_model) {
 
     std::vector< uint32_t > vertexIndices, uvIndices, normalIndices;
     std::vector< glm::vec3 > temp_vertices;

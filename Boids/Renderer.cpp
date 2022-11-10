@@ -280,7 +280,14 @@ void Renderer::run()
 	int modelToShow = 1;
 	float distance = 0.0f;
 
+	Model ModelAux;
+
 	std::vector<double> FrameTimes;
+
+	Renderer::loadModel("Hammer.obj", ModelAux);
+	Renderer::AddObject(Object(ModelAux, glm::mat4(1.0), textureId, texture));
+
+	Renderer::AddObject(Object(loadedModels[0], glm::mat4(1.0f), textureId, texture));
 	while (!glfwWindowShouldClose(window))
 	{
 		double currentTime = glfwGetTime();
@@ -297,7 +304,8 @@ void Renderer::run()
 		{
 			printf("%f FPS\n", 1.0 * std::accumulate(FrameTimes.begin(), FrameTimes.end(), (double)0LL) / FrameTimes.size());
 			printf("FrameTimes in Vector: %d\n", (int)FrameTimes.size());
-			printf("Models loaded: %d\n", (int)models.size());
+			printf("Models loaded: %d\n", (int)loadedModels.size());
+			printf("Objects in Game: %d\n", (int)GameObjects.size());
 			FrameTimes.clear();
 			startTime = currentTime;
 		}
@@ -322,14 +330,20 @@ void Renderer::run()
 		else
 			modelToShow = 0;
 
-		if ((modelToShow > models.size() - 1) && models.size() == 1)
-			Renderer::loadModel("Bottle.obj");
-		else if ((modelToShow > models.size() - 1) && models.size() == 2)
-			Renderer::loadModel("axtismus.obj");
+		if ((modelToShow > loadedModels.size() - 1) && loadedModels.size() == 1)
+		{
+			Renderer::loadModel("Bottle.obj", ModelAux);
+			Renderer::AddObject(Object(ModelAux, glm::mat4(1.0), textureId, texture));
+		}
+		else if ((modelToShow > loadedModels.size() - 1) && loadedModels.size() == 2)
+		{
+			Renderer::loadModel("axtismus.obj", ModelAux);
+			Renderer::AddObject(Object(ModelAux, glm::mat4(1.0), textureId, texture));
+		}
 
 
-		for (model m : models)
-			draw(m, texture, textureId, glm::mat4(1.0f));
+		for (Object o : GameObjects)
+			draw(o);
 
 		//draw(models[modelToShow], texture, textureId);
 
@@ -466,46 +480,46 @@ GLuint Renderer::loadShaders(const char* vertex_file_path, const char* fragment_
 	return ProgramID;
 }
 
-bool Renderer::loadModel(std::string FileName)
+void Renderer::loadModel(std::string FileName, Model& ModelAux)
 {
-	model ModelToAdd;
 
-	bool res = ObjectLoader::loadOBJ(FileName.c_str(), ModelToAdd);
-	models.push_back(ModelToAdd);
+	bool res = ObjectLoader::loadOBJ(FileName.c_str(), ModelAux);
 
+	/*
 	vertexBuffer.insert(std::pair<std::string, GLuint>(FileName, 0));
 	uvBuffer.insert(std::pair<std::string, GLuint>(FileName, 0));
-	normalBuffer.insert(std::pair<std::string, GLuint>(FileName, 0));
+	normalBuffer.insert(std::pair<std::string, GLuint>(FileName, 0)); */
 
 
 	// Loading Vertices
-	glGenBuffers(1, &vertexBuffer[FileName]);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer[FileName]);
-	glBufferData(GL_ARRAY_BUFFER, ModelToAdd.vertices.size() * sizeof(glm::vec3), &ModelToAdd.vertices[0], GL_STATIC_DRAW);
+	glGenBuffers(1, &ModelAux.vertexBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, ModelAux.vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, ModelAux.vertices.size() * sizeof(glm::vec3), &ModelAux.vertices[0], GL_STATIC_DRAW);
 
 	// Loading UVs
-	glGenBuffers(1, &uvBuffer[FileName]);
-	glBindBuffer(GL_ARRAY_BUFFER, uvBuffer[FileName]);
-	glBufferData(GL_ARRAY_BUFFER, ModelToAdd.uvs.size() * sizeof(glm::vec2), &ModelToAdd.uvs[0], GL_STATIC_DRAW);
+	glGenBuffers(1, &ModelAux.uvBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, ModelAux.uvBuffer);
+	glBufferData(GL_ARRAY_BUFFER, ModelAux.uvs.size() * sizeof(glm::vec2), &ModelAux.uvs[0], GL_STATIC_DRAW);
 
 	// Loading Normals
-	glGenBuffers(1, &normalBuffer[FileName]);
-	glBindBuffer(GL_ARRAY_BUFFER, normalBuffer[FileName]);
-	glBufferData(GL_ARRAY_BUFFER, ModelToAdd.normals.size() * sizeof(glm::vec3), &ModelToAdd.normals[0], GL_STATIC_DRAW);
+	glGenBuffers(1, &ModelAux.normalBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, ModelAux.normalBuffer);
+	glBufferData(GL_ARRAY_BUFFER, ModelAux.normals.size() * sizeof(glm::vec3), &ModelAux.normals[0], GL_STATIC_DRAW);
 
-	return res;
+	loadedModels.push_back(ModelAux);
+
 
 
 }
 
-bool Renderer::draw(model model, GLuint texture, GLuint textureId, glm::mat4 position)
+bool Renderer::draw(Object& Object)
 {
 	// Alpha
 	GLuint alpha = ControlService::getAlpha() ? 1.0f : 0.3f;
 
 	ProjectionMatrix = ControlService::getProjectionMatrix();
     ViewMatrix = ControlService::getViewMatrix();
-    ModelMatrix = position;
+    ModelMatrix = Object.position;
 	//ModelMatrix = glm::translate(ModelMatrix, glm::vec3(counter / 10000.0, 0, 0));
 	glm::mat4 mvp = ProjectionMatrix * ViewMatrix * ModelMatrix;
 
@@ -522,15 +536,15 @@ bool Renderer::draw(model model, GLuint texture, GLuint textureId, glm::mat4 pos
 	
 	// Bind our texture in Texture Unit 0
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture);
+	glBindTexture(GL_TEXTURE_2D, Object.texture);
 
 	// Set our texture sampler to use Texture Unit 0
-	glUniform1i(textureId, 0);
+	glUniform1i(Object.textureId, 0);
 
 
 	// Setup Vertex Buffer
 	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer[model.id]);
+	glBindBuffer(GL_ARRAY_BUFFER, Object.model.vertexBuffer);
 	glVertexAttribPointer(
 		0,
 		3,
@@ -541,7 +555,7 @@ bool Renderer::draw(model model, GLuint texture, GLuint textureId, glm::mat4 pos
 
 	// Setup UV Buffer
 	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER, uvBuffer[model.id]);
+	glBindBuffer(GL_ARRAY_BUFFER, Object.model.uvBuffer);
 	glVertexAttribPointer(
 		1,
 		2,
@@ -552,7 +566,7 @@ bool Renderer::draw(model model, GLuint texture, GLuint textureId, glm::mat4 pos
 
 	// Normal Buffer
 	glEnableVertexAttribArray(2);
-	glBindBuffer(GL_ARRAY_BUFFER, normalBuffer[model.id]);
+	glBindBuffer(GL_ARRAY_BUFFER, Object.model.normalBuffer);
 	glVertexAttribPointer(
 		2,
 		3,
@@ -563,6 +577,11 @@ bool Renderer::draw(model model, GLuint texture, GLuint textureId, glm::mat4 pos
 
 
 
-	glDrawArrays(GL_TRIANGLES, 0, (GLsizei)model.vertices.size());
+	glDrawArrays(GL_TRIANGLES, 0, (GLsizei)Object.model.vertices.size());
 	return true;
+}
+
+void Renderer::AddObject(Object ObjectToAdd)
+{
+	GameObjects.push_back(ObjectToAdd);
 }

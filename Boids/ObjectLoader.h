@@ -10,7 +10,7 @@ class ObjectLoader {
 public:
     static bool loadOBJ(
         const char* path,
-        model& out_model
+        Model& out_model
     );
 
 };

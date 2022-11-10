@@ -16,6 +16,7 @@
 #include "ControlService.h"
 #include "ObjectLoader.h"
 #include "Model.h"
+#include "Object.h"
 
 
 
@@ -24,7 +25,7 @@ class Renderer {
 
 public:
 
-	std::vector<model> models;
+
 
 	static Renderer& getInstance() {
 		static Renderer instance;
@@ -41,8 +42,9 @@ public:
 
 	void initialize();
 	void run();
-	bool draw(model model, GLuint texture, GLuint textureId, glm::mat4 position);
-	bool loadModel(std::string FileName);
+	bool draw(Object& object);
+	void loadModel(std::string FileName, Model& ModelOut);
+	void AddObject(Object ObjectToAdd);
 
 
 	void rotateMesh();
@@ -53,6 +55,9 @@ private:
 	~Renderer() = default;
 	Renderer(const Renderer&) = delete;
 	Renderer& operator=(const Renderer&) = delete;
+
+	std::vector<Model> loadedModels;
+	std::vector<Object> GameObjects;
 
 	std::map<std::string, GLuint> vertexBuffer, uvBuffer, normalBuffer;
 	GLuint matrixID, viewMatrixID, modelMatrixID, LightID, programID;
