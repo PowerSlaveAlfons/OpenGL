@@ -277,6 +277,7 @@ void Renderer::run()
 	const double LogInterval = 5.0;
 
 	unsigned long counter = 0;
+	float iterate = 0.0f;
 	int modelToShow = 1;
 	float distance = 0.0f;
 
@@ -287,7 +288,9 @@ void Renderer::run()
 	Renderer::loadModel("Hammer.obj", ModelAux);
 	Renderer::AddObject(Object(ModelAux, glm::mat4(1.0), textureId, texture));
 
-	Renderer::AddObject(Object(loadedModels[0], glm::mat4(1.0f), textureId, texture));
+	//Renderer::AddObject(Object(loadedModels[0], glm::mat4(1.0f), textureId, texture));
+
+
 	while (!glfwWindowShouldClose(window))
 	{
 		double currentTime = glfwGetTime();
@@ -343,7 +346,14 @@ void Renderer::run()
 
 
 		for (Object o : GameObjects)
+		{
+			if (o.model.id == "Hammer.obj")
+			{
+				o.position = glm::translate(o.position, glm::vec3(0, iterate, 0));
+				iterate += 0.001f;
+			}
 			draw(o);
+		}
 
 		//draw(models[modelToShow], texture, textureId);
 
@@ -482,7 +492,11 @@ GLuint Renderer::loadShaders(const char* vertex_file_path, const char* fragment_
 
 void Renderer::loadModel(std::string FileName, Model& ModelAux)
 {
+	ModelAux.vertices.clear();
+	ModelAux.uvs.clear();
+	ModelAux.normals.clear();
 
+	
 	bool res = ObjectLoader::loadOBJ(FileName.c_str(), ModelAux);
 
 	/*

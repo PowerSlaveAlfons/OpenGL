@@ -3,7 +3,6 @@
 
 bool ObjectLoader::loadOBJ(const char* path,
     Model& out_model) {
-
     std::vector< uint32_t > vertexIndices, uvIndices, normalIndices;
     std::vector< glm::vec3 > temp_vertices;
     std::vector< glm::vec2 > temp_uvs;
