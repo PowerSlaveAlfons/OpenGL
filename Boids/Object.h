@@ -7,15 +7,23 @@ class Object
 {
 public:
 	Model model;
-	glm::mat4 position;
+	glm::vec3 position;
 	GLuint textureId;
 	GLuint texture;
 
-	Object(Model modelNew, glm::mat4 positionNew, GLuint textureIdNew, GLuint textureNew)
+	Object(Model modelNew, glm::vec3 positionNew, GLuint textureIdNew, GLuint textureNew)
 	{
 		model = modelNew;
 		position = positionNew;
 		textureId = textureIdNew;
 		texture = textureNew;
+	}
+
+	glm::mat4 getModelMatrix()
+	{
+		return glm::mat4(                 1.0f, 0.0f, 0.0f, position.x,
+										  0.0f, 1.0f, 0.0f, position.y,
+										  0.0f, 0.0f, 1.0f, position.z,
+										  0.0f, 0.0f, 0.0f, 1.0f);
 	}
 };

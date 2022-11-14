@@ -286,7 +286,7 @@ void Renderer::run()
 	std::vector<double> FrameTimes;
 
 	Renderer::loadModel("Hammer.obj", ModelAux);
-	Renderer::AddObject(Object(ModelAux, glm::mat4(1.0), textureId, texture));
+	Renderer::AddObject(Object(ModelAux, glm::vec3(1.0f, 1.0f, 1.0f), textureId, texture));
 
 	//Renderer::AddObject(Object(loadedModels[0], glm::mat4(1.0f), textureId, texture));
 
@@ -336,12 +336,12 @@ void Renderer::run()
 		if ((modelToShow > loadedModels.size() - 1) && loadedModels.size() == 1)
 		{
 			Renderer::loadModel("Bottle.obj", ModelAux);
-			Renderer::AddObject(Object(ModelAux, glm::mat4(1.0), textureId, texture));
+			Renderer::AddObject(Object(ModelAux, glm::vec3(0.0f, 0.0f, 0.0f), textureId, texture));
 		}
 		else if ((modelToShow > loadedModels.size() - 1) && loadedModels.size() == 2)
 		{
 			Renderer::loadModel("axtismus.obj", ModelAux);
-			Renderer::AddObject(Object(ModelAux, glm::mat4(1.0), textureId, texture));
+			Renderer::AddObject(Object(ModelAux, glm::vec3(0.0f, 0.0f, 0.0f), textureId, texture));
 		}
 
 
@@ -349,8 +349,12 @@ void Renderer::run()
 		{
 			if (o.model.id == "Hammer.obj")
 			{
-				o.position = glm::translate(o.position, glm::vec3(0, iterate, 0));
-				iterate += 0.001f;
+				glm::vec3 cameraPos = cService->position;
+				float speed = 1.4f;
+				glm::vec3 towards = glm::normalize(glm::vec3(cameraPos - o.position));
+				//o.position = glm::translate(o.position, towards / 2.0f);
+				o.position = o.position + towards;
+				//iterate += 0.001f;
 			}
 			draw(o);
 		}
@@ -533,7 +537,7 @@ bool Renderer::draw(Object& Object)
 
 	ProjectionMatrix = ControlService::getProjectionMatrix();
     ViewMatrix = ControlService::getViewMatrix();
-    ModelMatrix = Object.position;
+    ModelMatrix = Object.getModelMatrix();
 	//ModelMatrix = glm::translate(ModelMatrix, glm::vec3(counter / 10000.0, 0, 0));
 	glm::mat4 mvp = ProjectionMatrix * ViewMatrix * ModelMatrix;
 
