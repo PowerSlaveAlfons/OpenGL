@@ -21,7 +21,7 @@ private:
 
 	static glm::mat4 ViewMatrix;
 	static glm::mat4 ProjectionMatrix;
-
+	static glm::vec3 position;
 	static float horizontalAngle;
 	static float verticalAngle;
 	static float initialFoV;
@@ -56,8 +56,6 @@ public:
 
 	static float getDistanceFromOrigin();
 	static bool getAlpha();
-
-	static glm::vec3 position;
 
 };
 
