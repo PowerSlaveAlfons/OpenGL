@@ -286,7 +286,7 @@ void Renderer::run()
 	std::vector<double> FrameTimes;
 
 	Renderer::loadModel("Hammer.obj", ModelAux);
-	Renderer::AddObject(Object(ModelAux, glm::mat4(1.0), textureId, texture));
+	Renderer::AddObject(Object(ModelAux, glm::vec3(0,0,-100), textureId, texture));
 
 	//Renderer::AddObject(Object(loadedModels[0], glm::mat4(1.0f), textureId, texture));
 
@@ -336,21 +336,27 @@ void Renderer::run()
 		if ((modelToShow > loadedModels.size() - 1) && loadedModels.size() == 1)
 		{
 			Renderer::loadModel("Bottle.obj", ModelAux);
-			Renderer::AddObject(Object(ModelAux, glm::mat4(1.0), textureId, texture));
+			Renderer::AddObject(Object(ModelAux, glm::vec3(0.0f), textureId, texture));
 		}
 		else if ((modelToShow > loadedModels.size() - 1) && loadedModels.size() == 2)
 		{
 			Renderer::loadModel("axtismus.obj", ModelAux);
-			Renderer::AddObject(Object(ModelAux, glm::mat4(1.0), textureId, texture));
+			Renderer::AddObject(Object(ModelAux, glm::vec3(0.0f), textureId, texture));
 		}
 
 
-		for (Object o : GameObjects)
+		for (Object& o : GameObjects)
 		{
 			if (o.model.id == "Hammer.obj")
 			{
-				o.position = glm::translate(o.position, glm::vec3(0, iterate, 0));
-				iterate += 0.001f;
+
+				float speed = 1.4f;
+				glm::vec3 towards = glm::normalize(glm::vec3(cService->position - glm::vec3(o.position)));
+
+
+				//o.position = glm::translate(o.position, towards / 2.0f);
+				o.position = o.position + (towards / 500.0f);
+				//iterate += 0.001f;
 			}
 			draw(o);
 		}
@@ -528,13 +534,14 @@ void Renderer::loadModel(std::string FileName, Model& ModelAux)
 
 bool Renderer::draw(Object& Object)
 {
+	//glm::mat4 TemplateMatrix = glm::mat4(1.0);
 	// Alpha
 	GLuint alpha = ControlService::getAlpha() ? 1.0f : 0.3f;
 
 	ProjectionMatrix = ControlService::getProjectionMatrix();
     ViewMatrix = ControlService::getViewMatrix();
-    ModelMatrix = Object.position;
-	//ModelMatrix = glm::translate(ModelMatrix, glm::vec3(counter / 10000.0, 0, 0));
+    //ModelMatrix = Object.position;
+	ModelMatrix = glm::translate(glm::mat4(1.0), Object.position);
 	glm::mat4 mvp = ProjectionMatrix * ViewMatrix * ModelMatrix;
 
 	// Send our transformation to the currently bound shader in the "MVP" uniform
