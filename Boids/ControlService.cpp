@@ -117,3 +117,8 @@ bool ControlService::getAlpha()
 {
 	return isAlpha;
 }
+
+bool ControlService::getKey(int key)
+{
+	return glfwGetKey(window, key) == GLFW_PRESS;
+}

@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <GL/glew.h>
 #include "ControlService.h"
+#include <glm/gtx/rotate_vector.hpp>
 
 class Object
 {
@@ -18,15 +19,38 @@ public:
 		position = positionNew;
 		textureId = textureIdNew;
 		texture = textureNew;
+
+		if (model.id == "Hammer.obj")
+		{
+			movementDirection = glm::vec3(0, 1, 0);
+		}
 	}
 
 	void handlePhysics(ControlService* cService)
 	{
 		if (model.id == "Hammer.obj")
 		{
-			glm::vec3 towards = glm::normalize(glm::vec3(cService->position - glm::vec3(position)));
-			position = position + (towards / 5000.0f);
+			//movementDirection = glm::normalize(glm::vec3(cService->position - glm::vec3(position)));
+
+			//movementDirection = movementDirection * speed;
+			if(cService->getKey(GLFW_KEY_X))
+				movementDirection = glm::rotateZ(movementDirection, 0.001f);
+			position = position + (movementDirection / 5000.0f);
+
+			//speed = speed + 0.0001f;
 		}
 
 	}
+
+	void setMovement(glm::vec3 direction, float speedNew)
+	{
+		movementDirection = direction;
+		speed = speedNew;
+	}
+
+private:
+	glm::vec3 movementDirection;
+	float speed = 0.01f;
+	const float drag = 0.999f;
+	bool init = false;
 };

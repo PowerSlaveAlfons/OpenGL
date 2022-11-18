@@ -57,6 +57,7 @@ public:
 	static float getDistanceFromOrigin();
 	static bool getAlpha();
 	static glm::vec3 position;
+	static bool getKey(int key);
 
 };
 
