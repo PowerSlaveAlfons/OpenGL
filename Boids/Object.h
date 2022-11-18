@@ -33,11 +33,13 @@ public:
 			//movementDirection = glm::normalize(glm::vec3(cService->position - glm::vec3(position)));
 
 			//movementDirection = movementDirection * speed;
-			if(cService->getKey(GLFW_KEY_X))
-				movementDirection = glm::rotateZ(movementDirection, 0.001f);
-			position = position + (movementDirection / 5000.0f);
+			if (cService->getKey(GLFW_KEY_X))
+				setMovement(glm::rotateZ(movementDirection, 0.001f), 0.2f);
+			position = position + (movementDirection / 500.0f) * speed;
 
-			//speed = speed + 0.0001f;
+			speed = speed * drag;
+			if (speed < 0)
+				speed = 0;
 		}
 
 	}
@@ -50,7 +52,7 @@ public:
 
 private:
 	glm::vec3 movementDirection;
-	float speed = 0.01f;
-	const float drag = 0.999f;
+	float speed = 1.0f;
+	const float drag = 0.9999f;
 	bool init = false;
 };
