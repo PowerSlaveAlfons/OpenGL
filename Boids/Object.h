@@ -34,12 +34,20 @@ public:
 
 			//movementDirection = movementDirection * speed;
 			if (cService->getKey(GLFW_KEY_X))
-				setMovement(glm::rotateZ(movementDirection, 0.001f), 0.2f);
+				setMovement(glm::rotateZ(movementDirection, 0.001f), 1.5f);
 			position = position + (movementDirection / 500.0f) * speed;
 
 			speed = speed * drag;
 			if (speed < 0)
 				speed = 0;
+
+			if (position.x > 10 || position.x < -10)
+				movementDirection.x *= -1;
+			if (position.y > 10 || position.y < -10)
+				movementDirection.y *= -1;
+			if (position.z > 10 || position.z < -10)
+				movementDirection.z *= -1;
+
 		}
 
 	}
