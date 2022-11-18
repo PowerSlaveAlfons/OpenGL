@@ -272,7 +272,8 @@ void Renderer::run()
 	LightID = glGetUniformLocation(programID, "LightPostion_worldspace");
 
 	double lastTime = glfwGetTime();
-	double startTime = glfwGetTime();
+	double startTimeFrames = glfwGetTime();
+	double startTimePhysics = glfwGetTime();
 	int nbFrames = 0;
 	const double LogInterval = 5.0;
 
@@ -280,13 +281,14 @@ void Renderer::run()
 	float iterate = 0.0f;
 	int modelToShow = 1;
 	float distance = 0.0f;
+	const double PhysicsStep = 0.01;
 
 	Model ModelAux;
 
 	std::vector<double> FrameTimes;
 
 	Renderer::loadModel("Hammer.obj", ModelAux);
-	Renderer::AddObject(Object(ModelAux, glm::vec3(0,0,-100), textureId, texture));
+	Renderer::AddObject(Object(ModelAux, glm::vec3(0,0,0), textureId, texture));
 
 	//Renderer::AddObject(Object(loadedModels[0], glm::mat4(1.0f), textureId, texture));
 
@@ -295,6 +297,9 @@ void Renderer::run()
 	{
 		double currentTime = glfwGetTime();
 		nbFrames++;
+		double deltaTimeFrames = currentTime - startTimeFrames;
+		double deltaTimePhysics = currentTime - startTimePhysics;
+
 		
 		if (currentTime - lastTime >= 1.0)
 		{
@@ -303,14 +308,14 @@ void Renderer::run()
 			lastTime += 1.0;
 		}
 
-		if (currentTime - startTime >= LogInterval)
+		if (deltaTimeFrames >= LogInterval)
 		{
 			printf("%f FPS\n", 1.0 * std::accumulate(FrameTimes.begin(), FrameTimes.end(), (double)0LL) / FrameTimes.size());
 			printf("FrameTimes in Vector: %d\n", (int)FrameTimes.size());
 			printf("Models loaded: %d\n", (int)loadedModels.size());
 			printf("Objects in Game: %d\n", (int)GameObjects.size());
 			FrameTimes.clear();
-			startTime = currentTime;
+			startTimeFrames = currentTime;
 		}
 		counter++;
 
@@ -324,6 +329,7 @@ void Renderer::run()
 		// Compute the MVP matrix from keyboard and mouse input
 		cService->ComputeMatricesFromInput();
 
+		
 		distance = cService->getDistanceFromOrigin();
 
 		if (distance > 15.0f)
@@ -347,16 +353,10 @@ void Renderer::run()
 
 		for (Object& o : GameObjects)
 		{
-			if (o.model.id == "Hammer.obj")
+			if (deltaTimePhysics > PhysicsStep)
 			{
-
-				float speed = 1.4f;
-				glm::vec3 towards = glm::normalize(glm::vec3(cService->position - glm::vec3(o.position)));
-
-
-				//o.position = glm::translate(o.position, towards / 2.0f);
-				o.position = o.position + (towards / 500.0f);
-				//iterate += 0.001f;
+				o.handlePhysics(cService);
+				deltaTimePhysics = currentTime;
 			}
 			draw(o);
 		}
@@ -377,6 +377,7 @@ void Renderer::run()
 	// TODO: FIX CLEANUP
 	/*
 	for (int i = 0; i < models.size(); i++)
+
 	{
 		glDeleteBuffers(1, &vertexBuffer[i]);
 		glDeleteBuffers(1, &uvBuffer[i]);

@@ -2,6 +2,7 @@
 #include "Model.h"
 #include <glm/glm.hpp>
 #include <GL/glew.h>
+#include "ControlService.h"
 
 class Object
 {
@@ -17,5 +18,15 @@ public:
 		position = positionNew;
 		textureId = textureIdNew;
 		texture = textureNew;
+	}
+
+	void handlePhysics(ControlService* cService)
+	{
+		if (model.id == "Hammer.obj")
+		{
+			glm::vec3 towards = glm::normalize(glm::vec3(cService->position - glm::vec3(position)));
+			position = position + (towards / 5000.0f);
+		}
+
 	}
 };
