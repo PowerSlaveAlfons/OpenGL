@@ -288,7 +288,7 @@ void Renderer::run()
 
 	std::vector<double> FrameTimes;
 
-	Renderer::loadModel("Hammer.obj", ModelAux);
+	Renderer::loadModel("Ball.obj", ModelAux);
 	Renderer::AddObject(Object(ModelAux, glm::vec3(0,0,0), textureId, texture, glm::vec3(0,1,0)));
 
 	//Renderer::AddObject(Object(loadedModels[0], glm::mat4(1.0f), textureId, texture));

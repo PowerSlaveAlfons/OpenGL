@@ -25,7 +25,7 @@ public:
 		texture = textureNew;
 		orientation = orientationNew;
 
-		if (model.id == "Hammer.obj")
+		if (model.id == "Ball.obj")
 		{
 			movementDirection = glm::vec3(0, 1, 0);
 		}
@@ -33,7 +33,7 @@ public:
 
 	void handlePhysics(ControlService* cService)
 	{
-		if (model.id == "Hammer.obj")
+		if (model.id == "Ball.obj")
 		{
 			//movementDirection = glm::normalize(glm::vec3(cService->position - glm::vec3(position)));
 
@@ -53,7 +53,7 @@ public:
 				movementDirection.y *= -1;
 
 
-			angle = glm::length(position - oldPosition) * 50;// sphereRadius;
+			angle = glm::length(position - oldPosition);// sphereRadius;
 			orientation = glm::rotateZ(orientation, angle);
 			std::cout << angle << std::endl;
 
