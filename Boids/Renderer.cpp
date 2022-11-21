@@ -198,6 +198,7 @@ void Renderer::initialize()
 		exit(EXIT_FAILURE);
 	}
 	ControlService::setWindow(window);
+	glfwSetWindowPos(window, 1000, 300);
 
 	glfwSetKeyCallback(window, key_callback);
 
@@ -288,7 +289,7 @@ void Renderer::run()
 	std::vector<double> FrameTimes;
 
 	Renderer::loadModel("Hammer.obj", ModelAux);
-	Renderer::AddObject(Object(ModelAux, glm::vec3(0,0,0), textureId, texture));
+	Renderer::AddObject(Object(ModelAux, glm::vec3(0,0,0), textureId, texture, glm::vec3(0,1,0)));
 
 	//Renderer::AddObject(Object(loadedModels[0], glm::mat4(1.0f), textureId, texture));
 
@@ -342,12 +343,12 @@ void Renderer::run()
 		if ((modelToShow > loadedModels.size() - 1) && loadedModels.size() == 1)
 		{
 			Renderer::loadModel("Bottle.obj", ModelAux);
-			Renderer::AddObject(Object(ModelAux, glm::vec3(0.0f), textureId, texture));
+			Renderer::AddObject(Object(ModelAux, glm::vec3(0.0f), textureId, texture, glm::vec3(0, 1, 0)));
 		}
 		else if ((modelToShow > loadedModels.size() - 1) && loadedModels.size() == 2)
 		{
 			Renderer::loadModel("axtismus.obj", ModelAux);
-			Renderer::AddObject(Object(ModelAux, glm::vec3(0.0f), textureId, texture));
+			Renderer::AddObject(Object(ModelAux, glm::vec3(0.0f), textureId, texture, glm::vec3(0, 1, 0)));
 		}
 
 
@@ -543,6 +544,7 @@ bool Renderer::draw(Object& Object)
     ViewMatrix = ControlService::getViewMatrix();
     //ModelMatrix = Object.position;
 	ModelMatrix = glm::translate(glm::mat4(1.0), Object.position);
+	ModelMatrix = glm::rotate(ModelMatrix, Object.getAngle(), glm::cross(Object.getOrientation(), glm::vec3(0, 0, 1)));
 	glm::mat4 mvp = ProjectionMatrix * ViewMatrix * ModelMatrix;
 
 	// Send our transformation to the currently bound shader in the "MVP" uniform
