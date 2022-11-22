@@ -282,7 +282,7 @@ void Renderer::run()
 	float iterate = 0.0f;
 	int modelToShow = 1;
 	float distance = 0.0f;
-	const double PhysicsStep = 0.01;
+	const double PhysicsStep = 0.1;
 
 	Model ModelAux;
 
@@ -543,10 +543,10 @@ bool Renderer::draw(Object& Object)
 	ProjectionMatrix = ControlService::getProjectionMatrix();
     ViewMatrix = ControlService::getViewMatrix();
     //ModelMatrix = Object.position;
-	ModelMatrix = glm::translate(glm::mat4(1.0), Object.position);
-	ModelMatrix = glm::rotate(ModelMatrix, Object.getAngle(), glm::cross(Object.getOrientation(), glm::vec3(0, 0, 1)));
-	glm::mat4 mvp = ProjectionMatrix * ViewMatrix * ModelMatrix;
+	RotationMatrix = glm::toMat4(glm::normalize(Object.orientation));
+	ModelMatrix = glm::translate(glm::mat4(1.0), Object.position) * RotationMatrix;
 
+	glm::mat4 mvp = ProjectionMatrix * ViewMatrix * ModelMatrix;
 	// Send our transformation to the currently bound shader in the "MVP" uniform
 	glUniformMatrix4fv(matrixID, 1, GL_FALSE, &mvp[0][0]);
 	glUniformMatrix4fv(modelMatrixID, 1, GL_FALSE, &ModelMatrix[0][0]);

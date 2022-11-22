@@ -14,6 +14,8 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "glm/ext.hpp"
 #include "glm/gtx/string_cast.hpp"
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 #include "ControlService.h"
 #include "ObjectLoader.h"
@@ -63,7 +65,7 @@ private:
 
 	std::map<std::string, GLuint> vertexBuffer, uvBuffer, normalBuffer;
 	GLuint matrixID, viewMatrixID, modelMatrixID, LightID, programID;
-	glm::mat4 ProjectionMatrix, ViewMatrix, ModelMatrix, mvp;
+	glm::mat4 ProjectionMatrix, ViewMatrix, ModelMatrix, mvp, RotationMatrix;
 
 	GLFWwindow* window = nullptr;
 	static ControlService* cService;

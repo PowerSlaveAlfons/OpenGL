@@ -15,15 +15,17 @@ public:
 	glm::vec3 position;
 	GLuint textureId;
 	GLuint texture;
-	glm::vec3 orientation;
+	glm::quat orientation;
+	glm::vec3 orientationVec;
 
-	Object(Model modelNew, glm::vec3 positionNew, GLuint textureIdNew, GLuint textureNew, glm::vec3 orientationNew)
+	Object(Model modelNew, glm::vec3 positionNew, GLuint textureIdNew, GLuint textureNew, glm::quat orientationNew)
 	{
 		model = modelNew;
 		position = positionNew;
 		textureId = textureIdNew;
 		texture = textureNew;
 		orientation = orientationNew;
+		orientationVec = glm::vec3(0, 1, 0);
 
 		if (model.id == "Ball.obj")
 		{
@@ -53,11 +55,12 @@ public:
 				movementDirection.y *= -1;
 
 
-			angle = glm::length(position - oldPosition);// sphereRadius;
-			//angle += glm::radians(0.0005f);
-			orientation = glm::rotateZ(glm::normalize(orientation), angle);
-			//std::cout << angle << std::endl;
+			angle = glm::length(position - oldPosition) * speed * 50;// sphereRadius;
 
+			//angle += glm::radians(0.0005f);
+			//orientation = glm::rotate(orientation, angle, glm::cross(orientation, glm::vec3(0,0,1))) * orientation;
+			std::cout << glm::to_string(orientation) << std::endl;
+			orientation = glm::angleAxis(glm::degrees(angle), glm::cross(movementDirection, glm::vec3(0, 0, 1)));
 		}
 
 	}
@@ -73,7 +76,7 @@ public:
 		return movementDirection;
 	}
 
-	glm::vec3 getOrientation()
+	glm::quat getOrientation()
 	{
 		return orientation;
 	}
@@ -88,5 +91,5 @@ private:
 	float speed = 1.0f;
 	const float drag = 0.9999f;
 	bool init = false;
-	float angle = 0.0f;
+	float angle = glm::radians(90.0f);
 };
