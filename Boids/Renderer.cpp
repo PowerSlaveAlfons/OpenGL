@@ -351,6 +351,12 @@ void Renderer::run()
 			Renderer::AddObject(Object(ModelAux, glm::vec3(0.0f), textureId, texture, glm::vec3(0, 1, 0)));
 		}
 
+		if (cService->getKey(GLFW_KEY_F))
+		{
+			Renderer::loadModel("Ball.obj", ModelAux);
+			Renderer::AddObject(Object(ModelAux, glm::vec3(0.0f), textureId, texture, glm::vec3(0, 1, 0)));
+		}
+
 
 		for (Object& o : GameObjects)
 		{

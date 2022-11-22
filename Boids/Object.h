@@ -59,7 +59,7 @@ public:
 
 			//angle += glm::radians(0.0005f);
 			//orientation = glm::rotate(orientation, angle, glm::cross(orientation, glm::vec3(0,0,1))) * orientation;
-			std::cout << glm::to_string(orientation) << std::endl;
+			//std::cout << glm::to_string(orientation) << std::endl;
 			orientation = glm::angleAxis(glm::degrees(angle), glm::cross(movementDirection, glm::vec3(0, 0, 1)));
 		}
 
