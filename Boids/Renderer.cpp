@@ -259,7 +259,7 @@ void Renderer::run()
 	modelMatrixID = glGetUniformLocation(programID, "M");
 
 	// Load the texture
-	GLuint texture = loadDDS("uvmap.DDS");
+	GLuint texture = loadDDS("BallTexture.DDS");
 
 	// Get a handle for our "Texture" uniform
 	GLuint textureId = glGetUniformLocation(programID, "myTextureSampler");
@@ -554,9 +554,9 @@ bool Renderer::draw(Object& Object)
 
 	// Lighting
 
-	glm::vec3 lightPos = glm::vec3(10, 4, 4);
+	glm::vec3 lightPos = glm::vec3(0, 0, 20);
 	glUniform3f(LightID, lightPos.x, lightPos.y, lightPos.z);
-	glUniform1f(glGetUniformLocation(programID, "alpha"), alpha);
+	//glUniform1f(glGetUniformLocation(programID, "alpha"), alpha);
 	
 	// Bind our texture in Texture Unit 0
 	glActiveTexture(GL_TEXTURE0);

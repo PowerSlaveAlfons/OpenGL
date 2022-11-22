@@ -54,8 +54,9 @@ public:
 
 
 			angle = glm::length(position - oldPosition);// sphereRadius;
-			orientation = glm::rotateZ(orientation, angle);
-			std::cout << angle << std::endl;
+			//angle += glm::radians(0.0005f);
+			orientation = glm::rotateZ(glm::normalize(orientation), angle);
+			//std::cout << angle << std::endl;
 
 		}
 
