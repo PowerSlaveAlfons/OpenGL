@@ -17,8 +17,9 @@ public:
 	GLuint texture;
 	glm::quat orientation;
 	glm::vec3 orientationVec;
+	bool isPlayer;
 
-	Object(Model modelNew, glm::vec3 positionNew, GLuint textureIdNew, GLuint textureNew, glm::quat orientationNew)
+	Object(Model modelNew, glm::vec3 positionNew, GLuint textureIdNew, GLuint textureNew, glm::quat orientationNew, bool isPlayerNew)
 	{
 		model = modelNew;
 		position = positionNew;
@@ -26,6 +27,7 @@ public:
 		texture = textureNew;
 		orientation = orientationNew;
 		orientationVec = glm::vec3(0, 1, 0);
+		isPlayer = isPlayerNew;
 
 		if (model.id == "Ball.obj")
 		{
@@ -37,13 +39,10 @@ public:
 	{
 		if (model.id == "Ball.obj")
 		{
-			//movementDirection = glm::normalize(glm::vec3(cService->position - glm::vec3(position)));
-
-			//movementDirection = movementDirection * speed;
-			if (cService->getKey(GLFW_KEY_X))
+			if (isPlayer && cService->getKey(GLFW_KEY_X))
 				setMovement(glm::rotateZ(movementDirection, 0.001f), 1.5f);
 			glm::vec3 oldPosition = position;
-			position = position + (movementDirection / 500.0f) * speed;
+			position = position + (glm::normalize(movementDirection) / 500.0f) * speed;
 
 			speed = speed * drag;
 			if (speed < 0)
@@ -55,14 +54,20 @@ public:
 				movementDirection.y *= -1;
 
 
-			angle = glm::length(position - oldPosition) * speed * 50;// sphereRadius;
-
-			//angle += glm::radians(0.0005f);
-			//orientation = glm::rotate(orientation, angle, glm::cross(orientation, glm::vec3(0,0,1))) * orientation;
-			//std::cout << glm::to_string(orientation) << std::endl;
+			angle = glm::length(position - oldPosition) * speed * 50;
 			orientation = glm::angleAxis(glm::degrees(angle), glm::cross(movementDirection, glm::vec3(0, 0, 1)));
 		}
 
+	}
+
+	bool CheckCollission(Object& other)
+	{
+		return glm::length(this->position - other.position) < 1.0f;
+	}
+
+	bool CheckCollission(glm::vec3 other)
+	{
+		return glm::length(this->position - other) < 1.0f;
 	}
 
 	void setMovement(glm::vec3 direction, float speedNew)
@@ -85,10 +90,15 @@ public:
 	{
 		return angle;
 	}
+	
+	static bool AreEqual(const Object& a, const Object& b)
+	{
+		return &a == &b;
+	}
 
 private:
 	glm::vec3 movementDirection;
-	float speed = 1.0f;
+	float speed = 0.0f;
 	const float drag = 0.9999f;
 	bool init = false;
 	float angle = glm::radians(90.0f);

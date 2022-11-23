@@ -289,9 +289,7 @@ void Renderer::run()
 	std::vector<double> FrameTimes;
 
 	Renderer::loadModel("Ball.obj", ModelAux);
-	Renderer::AddObject(Object(ModelAux, glm::vec3(0,0,0), textureId, texture, glm::vec3(0,1,0)));
-
-	//Renderer::AddObject(Object(loadedModels[0], glm::mat4(1.0f), textureId, texture));
+	Renderer::AddObject(Object(ModelAux, glm::vec3(0,0,0), textureId, texture, glm::vec3(0,1,0), true));
 
 
 	while (!glfwWindowShouldClose(window))
@@ -333,28 +331,25 @@ void Renderer::run()
 		
 		distance = cService->getDistanceFromOrigin();
 
-		if (distance > 15.0f)
-			modelToShow = 2;
-		else if (distance > 10.0f)
-			modelToShow = 1;
-		else
-			modelToShow = 0;
-
-		if ((modelToShow > loadedModels.size() - 1) && loadedModels.size() == 1)
-		{
-			Renderer::loadModel("Bottle.obj", ModelAux);
-			Renderer::AddObject(Object(ModelAux, glm::vec3(0.0f), textureId, texture, glm::vec3(0, 1, 0)));
-		}
-		else if ((modelToShow > loadedModels.size() - 1) && loadedModels.size() == 2)
-		{
-			Renderer::loadModel("axtismus.obj", ModelAux);
-			Renderer::AddObject(Object(ModelAux, glm::vec3(0.0f), textureId, texture, glm::vec3(0, 1, 0)));
-		}
-
 		if (cService->getKey(GLFW_KEY_F))
 		{
-			Renderer::loadModel("Ball.obj", ModelAux);
-			Renderer::AddObject(Object(ModelAux, glm::vec3(0.0f), textureId, texture, glm::vec3(0, 1, 0)));
+			bool spawnAble = true;
+
+			for (Object& o : GameObjects)
+			{
+				if (o.CheckCollission(glm::vec3(0.0f)))
+				{
+					spawnAble = false;
+					break;
+				}
+			}
+			if (spawnAble)
+			{
+				for (Object& o : GameObjects)
+					o.isPlayer = false;
+				Renderer::loadModel("Ball.obj", ModelAux);
+				Renderer::AddObject(Object(ModelAux, glm::vec3(0.0f), textureId, texture, glm::vec3(0, 1, 0), true));
+			}
 		}
 
 
@@ -363,6 +358,13 @@ void Renderer::run()
 			if (deltaTimePhysics > PhysicsStep)
 			{
 				o.handlePhysics(cService);
+				for (Object& other : GameObjects)
+				{
+					if (Object::AreEqual(o, other))
+						continue;
+					o.CheckCollission(other);
+
+				}
 				deltaTimePhysics = currentTime;
 			}
 			draw(o);
@@ -548,7 +550,6 @@ bool Renderer::draw(Object& Object)
 
 	ProjectionMatrix = ControlService::getProjectionMatrix();
     ViewMatrix = ControlService::getViewMatrix();
-    //ModelMatrix = Object.position;
 	RotationMatrix = glm::toMat4(glm::normalize(Object.orientation));
 	ModelMatrix = glm::translate(glm::mat4(1.0), Object.position) * RotationMatrix;
 
