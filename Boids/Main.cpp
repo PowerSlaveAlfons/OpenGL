@@ -6,11 +6,6 @@
 int main() {
 
     Renderer& gService = Renderer::getInstance();
-
-
-    Model ModelAux;
-
-
     gService.initialize();
     gService.run();
 

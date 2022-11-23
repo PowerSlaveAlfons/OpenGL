@@ -190,7 +190,7 @@ void Renderer::initialize()
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 
-	window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Cooler Titel", NULL, NULL);
+	window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "OpenGL Game", NULL, NULL);
 
 	if (!window) // Window creation failed
 	{
@@ -289,7 +289,16 @@ void Renderer::run()
 	std::vector<double> FrameTimes;
 
 	Renderer::loadModel("Ball.obj", ModelAux);
-	Renderer::AddObject(Object(ModelAux, glm::vec3(0,0,0), textureId, texture, glm::vec3(0,1,0), true));
+	Renderer::AddObject(Object(ModelAux, glm::vec3(0,-2,-15), textureId, texture, glm::vec3(0,0,0), true));
+
+	Renderer::loadModel("Corner.obj", ModelAux);
+	Renderer::AddObject(Object(ModelAux, glm::vec3(-10, -5, -15), textureId, texture, glm::vec3(0, 0, 0), false));
+	Renderer::loadModel("Corner.obj", ModelAux);
+	Renderer::AddObject(Object(ModelAux, glm::vec3(-10, 5, -15), textureId, texture, glm::vec3(0, 0, 0), false));
+	Renderer::loadModel("Corner.obj", ModelAux);
+	Renderer::AddObject(Object(ModelAux, glm::vec3(10, -5, -15), textureId, texture, glm::vec3(0, 0, 0), false));
+	Renderer::loadModel("Corner.obj", ModelAux);
+	Renderer::AddObject(Object(ModelAux, glm::vec3(10, 5, -15), textureId, texture, glm::vec3(0, 0, 0), false));
 
 
 	while (!glfwWindowShouldClose(window))
@@ -337,7 +346,7 @@ void Renderer::run()
 
 			for (Object& o : GameObjects)
 			{
-				if (o.CheckCollission(glm::vec3(0.0f)))
+				if (o.CheckCollission(glm::vec3(0,-2,-15)))
 				{
 					spawnAble = false;
 					break;
@@ -348,7 +357,7 @@ void Renderer::run()
 				for (Object& o : GameObjects)
 					o.isPlayer = false;
 				Renderer::loadModel("Ball.obj", ModelAux);
-				Renderer::AddObject(Object(ModelAux, glm::vec3(0.0f), textureId, texture, glm::vec3(0, 1, 0), true));
+				Renderer::AddObject(Object(ModelAux, glm::vec3(0,-2,-15), textureId, texture, glm::vec3(0, 0, 0), true));
 			}
 		}
 
@@ -360,9 +369,8 @@ void Renderer::run()
 				o.handlePhysics(cService);
 				for (Object& other : GameObjects)
 				{
-					if (Object::AreEqual(o, other))
-						continue;
-					o.CheckCollission(other);
+					if (o.CheckCollission(other))
+						o.PerformCollission(other);
 
 				}
 				deltaTimePhysics = currentTime;

@@ -50,7 +50,7 @@ public:
 
 			if (position.x > 10 || position.x < -10)
 				movementDirection.x *= -1;
-			if (position.y > 10 || position.y < -10)
+			if (position.y > 5 || position.y < -5)
 				movementDirection.y *= -1;
 
 
@@ -62,6 +62,8 @@ public:
 
 	bool CheckCollission(Object& other)
 	{
+		if (Object::AreEqual(*this, other))
+			return false;
 		return glm::length(this->position - other.position) < 1.0f;
 	}
 
@@ -70,6 +72,30 @@ public:
 		return glm::length(this->position - other) < 1.0f;
 	}
 
+	void PerformCollission(Object& other)
+	{
+		if (other.model.id == "Corner.obj")
+			position = glm::vec3(-100, -100, -100);
+		
+		glm::vec3 nv1 = this->movementDirection * this->speed;
+		glm::vec3 nv2 = other.movementDirection * other.speed;
+
+		nv1 += project(other.movementDirection * other.speed, other.position - this->position);
+		nv1 -= project(this->movementDirection * this->speed, this->position - other.position);
+		this->speed = glm::length(nv1);
+		this->movementDirection = glm::normalize(nv1);
+
+		nv2 += project(this->movementDirection * this->speed, other.position - this->position);
+		nv2 -= project(other.movementDirection * other.speed, this->position - other.position);
+		other.speed = glm::length(nv2);
+		other.movementDirection = glm::normalize(nv2);
+
+	}
+
+	glm::vec3 project(const glm::vec3& u, const glm::vec3& v)
+	{
+		return (glm::dot(u, v) / glm::dot(v, v)) * v;
+	}
 	void setMovement(glm::vec3 direction, float speedNew)
 	{
 		movementDirection = direction;
