@@ -276,7 +276,7 @@ void Renderer::run()
 	double startTimeFrames = glfwGetTime();
 	double startTimePhysics = glfwGetTime();
 	int nbFrames = 0;
-	const double LogInterval = 5.0;
+	const double LogInterval = 2.5;
 
 	unsigned long counter = 0;
 	float iterate = 0.0f;
@@ -309,21 +309,27 @@ void Renderer::run()
 		double deltaTimePhysics = currentTime - startTimePhysics;
 
 		
-		if (currentTime - lastTime >= 1.0)
+		if (currentTime - lastTime >= 0.5)
 		{
 			FrameTimes.push_back(double(nbFrames));
 			nbFrames = 0;
-			lastTime += 1.0;
+			lastTime = currentTime;
 		}
 
 		if (deltaTimeFrames >= LogInterval)
 		{
-			printf("%f FPS\n", 1.0 * std::accumulate(FrameTimes.begin(), FrameTimes.end(), (double)0LL) / FrameTimes.size());
-			printf("FrameTimes in Vector: %d\n", (int)FrameTimes.size());
-			printf("Models loaded: %d\n", (int)loadedModels.size());
-			printf("Objects in Game: %d\n", (int)GameObjects.size());
+			printf("%d\n", (int)loadedModels.size());
+			printf("%.2f,", 2.0 * std::accumulate(FrameTimes.begin(), FrameTimes.end(), (double)0LL) / FrameTimes.size());
+			//printf("FrameTimes in Vector: %d\n", (int)FrameTimes.size());
 			FrameTimes.clear();
 			startTimeFrames = currentTime;
+			for (Object& o : GameObjects)
+				o.isPlayer = false;
+			for (int i = 0; i < 5; i++)
+			{
+				Renderer::loadModel("Ball.obj", ModelAux);
+				Renderer::AddObject(Object(ModelAux, glm::vec3(0, -2, -15), textureId, texture, glm::vec3(0, 0, 0), true));
+			}
 		}
 		counter++;
 
@@ -343,7 +349,7 @@ void Renderer::run()
 		if (cService->getKey(GLFW_KEY_F))
 		{
 			bool spawnAble = true;
-
+			/*
 			for (Object& o : GameObjects)
 			{
 				if (o.CheckCollission(glm::vec3(0,-2,-15)))
@@ -351,7 +357,7 @@ void Renderer::run()
 					spawnAble = false;
 					break;
 				}
-			}
+			} */
 			if (spawnAble)
 			{
 				for (Object& o : GameObjects)

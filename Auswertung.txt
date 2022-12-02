@@ -1,0 +1,390 @@
+Initializing GLFW...
+Successfully initialized GLFW
+Compiling shader : SimpleVertexShader.glsl
+Compiling shader : SimpleFragmentShader.glsl
+Linking program
+Loading TextureBallTexture.DDS
+4036.222222 FPS
+Models loaded: 5
+Objects in Game: 5
+5880.200000 FPS
+Models loaded: 10
+Objects in Game: 10
+5780.200000 FPS
+Models loaded: 15
+Objects in Game: 15
+5696.600000 FPS
+Models loaded: 20
+Objects in Game: 20
+5763.400000 FPS
+Models loaded: 25
+Objects in Game: 25
+4995.200000 FPS
+Models loaded: 30
+Objects in Game: 30
+3976.200000 FPS
+Models loaded: 35
+Objects in Game: 35
+3003.400000 FPS
+Models loaded: 40
+Objects in Game: 40
+3406.200000 FPS
+Models loaded: 45
+Objects in Game: 45
+3034.800000 FPS
+Models loaded: 50
+Objects in Game: 50
+2873.800000 FPS
+Models loaded: 55
+Objects in Game: 55
+2540.800000 FPS
+Models loaded: 60
+Objects in Game: 60
+2304.000000 FPS
+Models loaded: 65
+Objects in Game: 65
+1966.000000 FPS
+Models loaded: 70
+Objects in Game: 70
+1865.800000 FPS
+Models loaded: 75
+Objects in Game: 75
+1717.600000 FPS
+Models loaded: 80
+Objects in Game: 80
+1584.600000 FPS
+Models loaded: 85
+Objects in Game: 85
+1454.600000 FPS
+Models loaded: 90
+Objects in Game: 90
+1343.200000 FPS
+Models loaded: 95
+Objects in Game: 95
+1232.200000 FPS
+Models loaded: 100
+Objects in Game: 100
+1154.800000 FPS
+Models loaded: 105
+Objects in Game: 105
+1073.000000 FPS
+Models loaded: 110
+Objects in Game: 110
+1006.400000 FPS
+Models loaded: 115
+Objects in Game: 115
+940.200000 FPS
+Models loaded: 120
+Objects in Game: 120
+880.600000 FPS
+Models loaded: 125
+Objects in Game: 125
+821.000000 FPS
+Models loaded: 130
+Objects in Game: 130
+781.200000 FPS
+Models loaded: 135
+Objects in Game: 135
+732.400000 FPS
+Models loaded: 140
+Objects in Game: 140
+695.800000 FPS
+Models loaded: 145
+Objects in Game: 145
+662.000000 FPS
+Models loaded: 150
+Objects in Game: 150
+627.800000 FPS
+Models loaded: 155
+Objects in Game: 155
+593.400000 FPS
+Models loaded: 160
+Objects in Game: 160
+562.800000 FPS
+Models loaded: 165
+Objects in Game: 165
+541.600000 FPS
+Models loaded: 170
+Objects in Game: 170
+514.400000 FPS
+Models loaded: 175
+Objects in Game: 175
+490.800000 FPS
+Models loaded: 180
+Objects in Game: 180
+470.000000 FPS
+Models loaded: 185
+Objects in Game: 185
+450.000000 FPS
+Models loaded: 190
+Objects in Game: 190
+429.200000 FPS
+Models loaded: 195
+Objects in Game: 195
+406.400000 FPS
+Models loaded: 200
+Objects in Game: 200
+397.200000 FPS
+Models loaded: 205
+Objects in Game: 205
+382.800000 FPS
+Models loaded: 210
+Objects in Game: 210
+366.000000 FPS
+Models loaded: 215
+Objects in Game: 215
+353.200000 FPS
+Models loaded: 220
+Objects in Game: 220
+338.600000 FPS
+Models loaded: 225
+Objects in Game: 225
+328.000000 FPS
+Models loaded: 230
+Objects in Game: 230
+314.800000 FPS
+Models loaded: 235
+Objects in Game: 235
+305.400000 FPS
+Models loaded: 240
+Objects in Game: 240
+294.600000 FPS
+Models loaded: 245
+Objects in Game: 245
+284.400000 FPS
+Models loaded: 250
+Objects in Game: 250
+273.800000 FPS
+Models loaded: 255
+Objects in Game: 255
+265.200000 FPS
+Models loaded: 260
+Objects in Game: 260
+257.600000 FPS
+Models loaded: 265
+Objects in Game: 265
+249.400000 FPS
+Models loaded: 270
+Objects in Game: 270
+240.888889 FPS
+Models loaded: 275
+Objects in Game: 275
+237.000000 FPS
+Models loaded: 280
+Objects in Game: 280
+225.400000 FPS
+Models loaded: 285
+Objects in Game: 285
+208.000000 FPS
+Models loaded: 290
+Objects in Game: 290
+187.000000 FPS
+Models loaded: 295
+Objects in Game: 295
+207.800000 FPS
+Models loaded: 300
+Objects in Game: 300
+198.800000 FPS
+Models loaded: 305
+Objects in Game: 305
+196.000000 FPS
+Models loaded: 310
+Objects in Game: 310
+190.600000 FPS
+Models loaded: 315
+Objects in Game: 315
+186.000000 FPS
+Models loaded: 320
+Objects in Game: 320
+179.000000 FPS
+Models loaded: 325
+Objects in Game: 325
+176.000000 FPS
+Models loaded: 330
+Objects in Game: 330
+171.800000 FPS
+Models loaded: 335
+Objects in Game: 335
+167.000000 FPS
+Models loaded: 340
+Objects in Game: 340
+162.800000 FPS
+Models loaded: 345
+Objects in Game: 345
+159.000000 FPS
+Models loaded: 350
+Objects in Game: 350
+154.200000 FPS
+Models loaded: 355
+Objects in Game: 355
+150.600000 FPS
+Models loaded: 360
+Objects in Game: 360
+146.000000 FPS
+Models loaded: 365
+Objects in Game: 365
+146.000000 FPS
+Models loaded: 370
+Objects in Game: 370
+140.000000 FPS
+Models loaded: 375
+Objects in Game: 375
+137.200000 FPS
+Models loaded: 380
+Objects in Game: 380
+133.200000 FPS
+Models loaded: 385
+Objects in Game: 385
+131.000000 FPS
+Models loaded: 390
+Objects in Game: 390
+128.400000 FPS
+Models loaded: 395
+Objects in Game: 395
+125.200000 FPS
+Models loaded: 400
+Objects in Game: 400
+118.800000 FPS
+Models loaded: 405
+Objects in Game: 405
+119.000000 FPS
+Models loaded: 410
+Objects in Game: 410
+117.400000 FPS
+Models loaded: 415
+Objects in Game: 415
+114.400000 FPS
+Models loaded: 420
+Objects in Game: 420
+112.400000 FPS
+Models loaded: 425
+Objects in Game: 425
+110.444444 FPS
+Models loaded: 430
+Objects in Game: 430
+109.400000 FPS
+Models loaded: 435
+Objects in Game: 435
+106.200000 FPS
+Models loaded: 440
+Objects in Game: 440
+103.800000 FPS
+Models loaded: 445
+Objects in Game: 445
+101.200000 FPS
+Models loaded: 450
+Objects in Game: 450
+99.600000 FPS
+Models loaded: 455
+Objects in Game: 455
+97.600000 FPS
+Models loaded: 460
+Objects in Game: 460
+95.200000 FPS
+Models loaded: 465
+Objects in Game: 465
+94.000000 FPS
+Models loaded: 470
+Objects in Game: 470
+92.600000 FPS
+Models loaded: 475
+Objects in Game: 475
+90.444444 FPS
+Models loaded: 480
+Objects in Game: 480
+88.600000 FPS
+Models loaded: 485
+Objects in Game: 485
+87.200000 FPS
+Models loaded: 490
+Objects in Game: 490
+85.400000 FPS
+Models loaded: 495
+Objects in Game: 495
+85.000000 FPS
+Models loaded: 500
+Objects in Game: 500
+83.200000 FPS
+Models loaded: 505
+Objects in Game: 505
+81.200000 FPS
+Models loaded: 510
+Objects in Game: 510
+79.800000 FPS
+Models loaded: 515
+Objects in Game: 515
+78.800000 FPS
+Models loaded: 520
+Objects in Game: 520
+77.111111 FPS
+Models loaded: 525
+Objects in Game: 525
+77.200000 FPS
+Models loaded: 530
+Objects in Game: 530
+75.000000 FPS
+Models loaded: 535
+Objects in Game: 535
+73.000000 FPS
+Models loaded: 540
+Objects in Game: 540
+72.200000 FPS
+Models loaded: 545
+Objects in Game: 545
+71.200000 FPS
+Models loaded: 550
+Objects in Game: 550
+70.200000 FPS
+Models loaded: 555
+Objects in Game: 555
+69.111111 FPS
+Models loaded: 560
+Objects in Game: 560
+67.200000 FPS
+Models loaded: 565
+Objects in Game: 565
+67.400000 FPS
+Models loaded: 570
+Objects in Game: 570
+65.200000 FPS
+Models loaded: 575
+Objects in Game: 575
+63.800000 FPS
+Models loaded: 580
+Objects in Game: 580
+63.400000 FPS
+Models loaded: 585
+Objects in Game: 585
+62.200000 FPS
+Models loaded: 590
+Objects in Game: 590
+61.200000 FPS
+Models loaded: 595
+Objects in Game: 595
+59.555556 FPS
+Models loaded: 600
+Objects in Game: 600
+55.600000 FPS
+Models loaded: 605
+Objects in Game: 605
+55.400000 FPS
+Models loaded: 610
+Objects in Game: 610
+57.800000 FPS
+Models loaded: 615
+Objects in Game: 615
+57.200000 FPS
+Models loaded: 620
+Objects in Game: 620
+56.400000 FPS
+Models loaded: 625
+Objects in Game: 625
+55.111111 FPS
+Models loaded: 630
+Objects in Game: 630
+55.600000 FPS
+Models loaded: 635
+Objects in Game: 635
+54.000000 FPS
+Models loaded: 640
+Objects in Game: 640
